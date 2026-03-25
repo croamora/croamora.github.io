@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="Oferta especial de cumpleanos">
+  <defs>
+    <linearGradient id="bgc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f9f45"/>
+      <stop offset="1" stop-color="#0b7d37"/>
+    </linearGradient>
+    <linearGradient id="cardc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fef7c2"/>
+      <stop offset="1" stop-color="#ffe690"/>
+    </linearGradient>
+    <filter id="s" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1d4b20" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bgc)"/>
+  <g opacity="0.17" fill="#36c164">
+    <circle cx="90" cy="72" r="22"/><circle cx="230" cy="112" r="16"/><circle cx="380" cy="84" r="20"/>
+    <circle cx="540" cy="102" r="17"/><circle cx="690" cy="76" r="19"/><circle cx="850" cy="108" r="16"/>
+    <circle cx="1015" cy="82" r="20"/><circle cx="1135" cy="120" r="16"/><circle cx="130" cy="245" r="19"/>
+    <circle cx="325" cy="270" r="16"/><circle cx="505" cy="248" r="21"/><circle cx="690" cy="270" r="16"/>
+    <circle cx="880" cy="242" r="21"/><circle cx="1045" cy="262" r="16"/>
+  </g>
+
+  <rect x="40" y="80" width="340" height="430" rx="34" fill="#0d8d3d" stroke="#ffffff" stroke-width="8" filter="url(#s)"/>
+  <text x="72" y="170" fill="#f3ff76" font-family="Arial, sans-serif" font-size="52" font-weight="900">FELIZ</text>
+  <text x="72" y="240" fill="#ffffff" font-family="Arial, sans-serif" font-size="68" font-weight="900">CUMPLE</text>
+  <text x="72" y="316" fill="#ffac17" font-family="Arial, sans-serif" font-size="86" font-weight="900">VECINO!</text>
+  <text x="72" y="372" fill="#ffffff" font-family="Arial, sans-serif" font-size="34" font-weight="700">Descuento especial</text>
+  <text x="72" y="414" fill="#dff8d8" font-family="Arial, sans-serif" font-size="30" font-weight="600">solo por hoy</text>
+
+  <g filter="url(#s)">
+    <rect x="430" y="112" width="500" height="265" rx="32" fill="url(#cardc)" stroke="#ffffff" stroke-width="7"/>
+    <text x="470" y="185" fill="#1a7e35" font-family="Arial, sans-serif" font-size="44" font-weight="800">OFERTA DE CUMPLEANOS</text>
+    <text x="470" y="280" fill="#0c6f2d" font-family="Arial, sans-serif" font-size="116" font-weight="900">30%</text>
+    <text x="740" y="280" fill="#0c6f2d" font-family="Arial, sans-serif" font-size="52" font-weight="800">OFF</text>
+    <text x="470" y="332" fill="#2d5f2d" font-family="Arial, sans-serif" font-size="34" font-weight="700">en productos marca Trebol</text>
+  </g>
+
+  <g filter="url(#s)">
+    <rect x="940" y="150" width="180" height="220" rx="18" fill="#ffffff"/>
+    <rect x="960" y="174" width="140" height="140" rx="70" fill="#f7ecb4"/>
+    <circle cx="1030" cy="244" r="44" fill="#ffe16f"/>
+    <path d="M1030 208 C1016 228, 1020 248, 1030 264 C1040 248, 1044 228, 1030 208 Z" fill="#ff7a45"/>
+    <rect x="1016" y="192" width="28" height="18" rx="8" fill="#2cb15a"/>
+    <text x="973" y="346" fill="#1e7a34" font-family="Arial, sans-serif" font-size="26" font-weight="800">CUPON VIP</text>
+  </g>
+</svg>

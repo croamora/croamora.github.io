@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="Oferta pack fideos pomarola">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0aa146"/>
+      <stop offset="1" stop-color="#07873c"/>
+    </linearGradient>
+    <linearGradient id="bubble3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0ea24a"/>
+      <stop offset="1" stop-color="#0a7f3c"/>
+    </linearGradient>
+    <filter id="shadow3" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#1f4f24" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg3)"/>
+  <g opacity="0.15" fill="#2ec363">
+    <circle cx="70" cy="80" r="20"/><circle cx="210" cy="120" r="16"/><circle cx="360" cy="90" r="21"/>
+    <circle cx="500" cy="110" r="17"/><circle cx="650" cy="85" r="19"/><circle cx="810" cy="120" r="16"/>
+    <circle cx="980" cy="90" r="20"/><circle cx="1120" cy="120" r="17"/><circle cx="140" cy="250" r="20"/>
+    <circle cx="300" cy="270" r="16"/><circle cx="470" cy="250" r="20"/><circle cx="650" cy="270" r="16"/>
+    <circle cx="860" cy="240" r="20"/><circle cx="1030" cy="260" r="16"/>
+  </g>
+
+  <rect x="35" y="85" width="325" height="420" rx="30" fill="#0f8f3f" stroke="#ffffff" stroke-width="8" filter="url(#shadow3)"/>
+  <text x="68" y="150" fill="#f3ff76" font-family="Arial, sans-serif" font-size="48" font-weight="900">APANO!</text>
+  <text x="68" y="220" fill="#ffffff" font-family="Arial, sans-serif" font-size="66" font-weight="900">JUNTA DE</text>
+  <text x="68" y="290" fill="#ff9f08" font-family="Arial, sans-serif" font-size="84" font-weight="900">OFERTAS</text>
+  <text x="68" y="350" fill="#ffffff" font-family="Arial, sans-serif" font-size="38" font-weight="700">Super Trebol</text>
+
+  <g filter="url(#shadow3)">
+    <rect x="420" y="128" width="450" height="250" rx="28" fill="url(#bubble3)" stroke="#ffffff" stroke-width="7" transform="rotate(-4 645 252)"/>
+    <text x="460" y="220" fill="#ffe83f" font-family="Arial, sans-serif" font-size="78" font-weight="900">$4.390</text>
+    <text x="652" y="220" fill="#ffe83f" font-family="Arial, sans-serif" font-size="44" font-weight="800">c/u</text>
+    <text x="460" y="274" fill="#ffffff" font-family="Arial, sans-serif" font-size="52" font-weight="800">Pack 5 Fideos</text>
+    <text x="460" y="314" fill="#ffffff" font-family="Arial, sans-serif" font-size="30" font-weight="600">+ 1 Pomarola 200 gr</text>
+  </g>
+
+  <g filter="url(#shadow3)">
+    <rect x="760" y="230" width="85" height="260" rx="10" fill="#f6f6f6" stroke="#d45050" stroke-width="6"/>
+    <rect x="830" y="220" width="85" height="270" rx="10" fill="#f6f6f6" stroke="#d45050" stroke-width="6"/>
+    <rect x="900" y="230" width="85" height="260" rx="10" fill="#f6f6f6" stroke="#d45050" stroke-width="6"/>
+    <text x="775" y="320" fill="#1a4f98" font-family="Arial, sans-serif" font-size="30" font-weight="800">SPAG</text>
+    <text x="845" y="320" fill="#1a4f98" font-family="Arial, sans-serif" font-size="30" font-weight="800">SPAG</text>
+    <text x="915" y="320" fill="#1a4f98" font-family="Arial, sans-serif" font-size="30" font-weight="800">SPAG</text>
+
+    <rect x="860" y="430" width="150" height="98" rx="12" fill="#b3232f"/>
+    <text x="883" y="488" fill="#ffffff" font-family="Arial, sans-serif" font-size="36" font-weight="800">POMAROLA</text>
+  </g>
+
+</svg>

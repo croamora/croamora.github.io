@@ -1,0 +1,1738 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo Trébol - Flujo Interactivo</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --trebol-900: #006c2d;
+      --trebol-700: #0b9f41;
+      --trebol-500: #55b948;
+      --trebol-lime: #aacf45;
+      --bg: #f3f8ef;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #d8e6d2;
+      --ios-dark: #2f333a;
+      --card: #ffffff;
+      --danger: #be2d2d;
+      --ok: #18863b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 5% 10%, #e2f3d8 0%, transparent 32%),
+        radial-gradient(circle at 95% 90%, #d9f0c8 0%, transparent 34%),
+        linear-gradient(130deg, #f4faef 0%, #f9fcf6 40%, #edf7e8 100%);
+      min-height: 100vh;
+    }
+
+    .layout {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(320px, 40%) 1fr;
+    }
+
+    .left {
+      padding: 26px;
+      border-right: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(4px);
+    }
+
+    .badge {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--trebol-900);
+      margin-bottom: 10px;
+    }
+
+    .badge::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--trebol-lime), var(--trebol-700));
+      box-shadow: 0 0 0 5px rgba(85, 185, 72, .2);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2vw, 1.9rem);
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.45;
+    }
+
+    .comment {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff 0%, #f9fcf7 100%);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 12px 24px rgba(24, 60, 20, .07);
+    }
+
+    .step {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--trebol-900);
+      border: 1px solid #cce6c3;
+      background: #edf9e7;
+      border-radius: 999px;
+      padding: 4px 10px;
+      margin-bottom: 10px;
+    }
+
+    .comment h2 {
+      margin: 0 0 6px;
+      font-size: 1.1rem;
+    }
+
+    .comment p {
+      margin: 0;
+      line-height: 1.5;
+      color: #3f4852;
+    }
+
+    .hint {
+      margin-top: 12px;
+      font-size: .92rem;
+      border: 1px dashed #c8ddbe;
+      border-radius: 12px;
+      padding: 11px 12px;
+      background: #f3faee;
+      color: #36553a;
+    }
+
+    .right {
+      display: grid;
+      place-items: center;
+      padding: 26px;
+    }
+
+    .phone {
+      position: relative;
+      width: min(430px, 95vw);
+      aspect-ratio: 430 / 886;
+      background: #121418;
+      border-radius: 52px;
+      padding: 10px;
+      box-shadow: 0 30px 45px rgba(0, 0, 0, .26), 0 8px 18px rgba(19, 64, 23, .12);
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 152px;
+      height: 34px;
+      border-radius: 999px;
+      background: #090a0c;
+      z-index: 6;
+    }
+
+    .screen {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      border-radius: 42px;
+      background: #fff;
+      overflow: hidden;
+      border: 1px solid #d5dee2;
+    }
+
+    .ios-status {
+      height: 44px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      font-size: .86rem;
+      font-weight: 600;
+      color: #10141a;
+      border-bottom: 1px solid #eef1f5;
+    }
+
+    .safari {
+      background: var(--ios-dark);
+      color: #f4f6fa;
+      padding: 8px 10px 10px;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      box-shadow: 0 7px 16px rgba(0, 0, 0, .15);
+    }
+
+    .url-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .pill-url {
+      flex: 1;
+      background: #50545b;
+      border-radius: 14px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      font-size: .98rem;
+      color: #f5f7fb;
+      border: 1px solid #636871;
+    }
+
+    .dot-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #51555c;
+      border: 1px solid #656b73;
+    }
+
+    .app {
+      height: calc(100% - 104px);
+      overflow-y: auto;
+      background: #eef2f0;
+      padding-bottom: 22px;
+    }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .vcard {
+      margin: 10px;
+      border: 1px solid #d7dcdf;
+      border-radius: 22px;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, .08);
+    }
+
+    .cover {
+      height: 188px;
+      position: relative;
+      overflow: visible;
+    }
+
+    .cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .circle-logo {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -100px;
+      width: 146px;
+      height: 146px;
+      border: 3px solid #e0e3e6;
+      border-radius: 50%;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      box-shadow: 0 10px 18px rgba(21, 70, 27, .18);
+      z-index: 4;
+    }
+
+    .circle-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      cursor: pointer;
+    }
+
+    .photo-edit-btn {
+      position: absolute;
+      right: -4px;
+      bottom: -4px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      background: linear-gradient(135deg, #0f913f, #17853b);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(16, 68, 27, .25);
+      display: grid;
+      place-items: center;
+    }
+
+    .photo-edit-btn.hide {
+      display: none;
+    }
+
+    .photo-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 20, 28, .6);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      z-index: 15;
+    }
+
+    .photo-modal.hide {
+      display: none;
+    }
+
+    .photo-modal-card {
+      width: 100%;
+      max-width: 320px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid #d8e4d3;
+      padding: 12px;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, .28);
+    }
+
+    .photo-modal-card h5 {
+      margin: 0;
+      font-size: .95rem;
+      color: #1f2d38;
+    }
+
+    .photo-modal-card p {
+      margin: 5px 0 10px;
+      color: #64707c;
+      font-size: .8rem;
+      line-height: 1.35;
+    }
+
+    .photo-preview {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid #dbe6d7;
+      max-height: 180px;
+      object-fit: cover;
+      display: none;
+      margin-bottom: 10px;
+    }
+
+    .photo-preview.show {
+      display: block;
+    }
+
+    .photo-actions {
+      display: grid;
+      gap: 8px;
+    }
+
+    .photo-actions button {
+      border-radius: 10px;
+      border: 1px solid #d4e1cf;
+      background: #f4fbf1;
+      color: #2c6333;
+      font: inherit;
+      font-size: .82rem;
+      font-weight: 700;
+      padding: 9px;
+      cursor: pointer;
+    }
+
+    .photo-actions button.primary {
+      border: 0;
+      background: linear-gradient(135deg, #0f933f, #17853c);
+      color: #fff;
+    }
+
+    .share-band {
+      background: #98ae46;
+      color: #fff;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      font-weight: 500;
+      font-size: .92rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .main-body {
+      padding: 68px 16px 16px;
+      text-align: center;
+    }
+
+    .main-body h3 {
+      margin: 0;
+      font-size: 1.62rem;
+      line-height: 1.16;
+      letter-spacing: -0.01em;
+      color: #1d2732;
+    }
+
+    .role {
+      margin-top: 6px;
+      color: #4a5563;
+      font-weight: 700;
+      font-size: .92rem;
+    }
+
+    .points-highlight {
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #cde2c8;
+      background: linear-gradient(135deg, #ecf8e7, #e0f3da);
+      color: #145f2c;
+      font-size: .86rem;
+      font-weight: 800;
+    }
+
+    .points-highlight strong {
+      font-size: .95rem;
+      color: #0f6e2c;
+    }
+
+    .member-accordion {
+      margin-top: 12px;
+      text-align: left;
+      border: 1px solid #dce4e7;
+      border-radius: 12px;
+      background: #f8fbfd;
+      overflow: hidden;
+    }
+
+    .member-accordion summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 11px 12px;
+      font-size: .86rem;
+      font-weight: 700;
+      color: #2b5f31;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f1f8ed;
+      border-bottom: 1px solid #d7e5d3;
+    }
+
+    .member-accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .member-accordion summary::after {
+      content: "+";
+      font-size: 1rem;
+      font-weight: 800;
+      color: #2f6e37;
+    }
+
+    .member-accordion[open] summary::after {
+      content: "-";
+    }
+
+    .member-meta {
+      margin-top: 0;
+      padding: 10px;
+      text-align: left;
+      display: grid;
+      gap: 8px;
+    }
+
+    .meta-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: 9px;
+      background: #fff;
+      border: 1px solid #e2e8eb;
+      font-size: .85rem;
+    }
+
+    .meta-item span {
+      color: #5f6a76;
+      font-weight: 600;
+    }
+
+    .meta-item strong {
+      color: #1f2a35;
+      font-weight: 800;
+    }
+
+    .cta {
+      margin: 18px 0 14px;
+      border-radius: 12px;
+      border: 0;
+      padding: 13px 12px;
+      width: 100%;
+      font: inherit;
+      font-weight: 600;
+      color: #fff;
+      background: #9aac42;
+      cursor: pointer;
+    }
+
+    .barcode {
+      margin-top: 14px;
+      border: 1px solid #dee4e7;
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .bars {
+      height: 90px;
+      border-radius: 4px;
+      background:
+        repeating-linear-gradient(90deg,
+          #000 0 2px,
+          #fff 2px 4px,
+          #000 4px 5px,
+          #fff 5px 8px,
+          #000 8px 11px,
+          #fff 11px 14px,
+          #000 14px 15px,
+          #fff 15px 18px);
+    }
+
+    .barcode p {
+      margin: 8px 0 0;
+      font-family: "Courier New", monospace;
+      letter-spacing: 1px;
+      font-size: .82rem;
+    }
+
+    .tabs {
+      margin-top: 12px;
+      display: flex;
+      background: #f3f6f8;
+      border: 1px solid #dfe5e8;
+      border-radius: 12px;
+      padding: 4px;
+      gap: 6px;
+    }
+
+    .tab {
+      flex: 1;
+      border: 0;
+      border-radius: 9px;
+      padding: 9px 8px;
+      font: inherit;
+      font-size: .82rem;
+      font-weight: 700;
+      color: #59636e;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .tab.active { background: #fff; color: #1e7c35; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+
+    .tab-content { margin-top: 10px; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    .offers-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+
+    .offers-head h5 {
+      margin: 0;
+      font-size: .9rem;
+      color: #1f2f3d;
+    }
+
+    .offer-nav {
+      display: flex;
+      gap: 6px;
+    }
+
+    .offer-nav button {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid #d2dfd2;
+      background: #fff;
+      color: #2f6f35;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .offers-track {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 92%;
+      gap: 10px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 6px;
+    }
+
+    .offers-track::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .offers-track::-webkit-scrollbar-thumb {
+      background: #c8dcc3;
+      border-radius: 999px;
+    }
+
+    .promo-image-slide {
+      scroll-snap-align: start;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #cfe2c8;
+      background: #eaf4df;
+      box-shadow: 0 7px 14px rgba(0, 0, 0, .05);
+      min-height: 138px;
+    }
+
+    .promo-image-slide img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+
+    .birthday-banner {
+      border: 1px solid #cfe2c8;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      box-shadow: 0 8px 16px rgba(17, 68, 25, .12);
+      background: #e7f4dd;
+    }
+
+    .birthday-banner img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+
+    .offer-accordion {
+      margin-bottom: 8px;
+      border: 1px solid #d8e5d3;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .offer-accordion summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: .84rem;
+      font-weight: 700;
+      color: #2b3b47;
+      background: #f6faf3;
+    }
+
+    .offer-accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .offer-accordion summary::after {
+      content: "+";
+      color: #1f7a35;
+      font-size: 1rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .offer-accordion[open] summary::after {
+      content: "-";
+    }
+
+    .offer-body {
+      border-top: 1px solid #dfe9da;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .purchase-accordion {
+      margin-bottom: 8px;
+      border: 1px solid #d8e5d3;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .purchase-accordion summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: .84rem;
+      font-weight: 700;
+      color: #2b3b47;
+      background: #f6faf3;
+    }
+
+    .purchase-accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .purchase-accordion summary::after {
+      content: "+";
+      color: #1f7a35;
+      font-size: 1rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .purchase-accordion[open] summary::after {
+      content: "-";
+    }
+
+    .purchase-body {
+      border-top: 1px solid #dfe9da;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .purchase-products {
+      display: grid;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .purchase-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .79rem;
+      border: 1px solid #e3ebdf;
+      border-radius: 9px;
+      padding: 8px;
+      background: #fcfefb;
+      color: #2a3540;
+    }
+
+    .purchase-total {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .82rem;
+      font-weight: 800;
+      color: #124f25;
+      background: #ebf7e6;
+      border: 1px solid #cfe5c8;
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+
+    .offer-code {
+      margin-top: 8px;
+      border: 1px solid #dce7d8;
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      background: #fbfef9;
+    }
+
+    .offer-bars {
+      height: 56px;
+      border-radius: 4px;
+      background: repeating-linear-gradient(90deg, #000 0 2px, #fff 2px 4px, #000 4px 5px, #fff 5px 8px, #000 8px 11px, #fff 11px 14px, #000 14px 15px, #fff 15px 18px);
+    }
+
+    .offer-code p {
+      margin: 6px 0 0;
+      font-family: "Courier New", monospace;
+      letter-spacing: 1px;
+      font-size: .78rem;
+      color: #1f2b36;
+    }
+
+    .list-item {
+      border: 1px solid #dfe6e9;
+      border-radius: 10px;
+      background: #fff;
+      padding: 9px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 7px;
+      font-size: .86rem;
+    }
+
+    .tag {
+      border: 1px solid #cce5c2;
+      color: #2f7e2f;
+      background: #ebf8e6;
+      border-radius: 999px;
+      font-size: .74rem;
+      padding: 4px 8px;
+      font-weight: 700;
+    }
+
+    .box {
+      margin: 12px;
+      background: #fff;
+      border: 1px solid #dbe4dd;
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 8px 16px rgba(0,0,0,.05);
+    }
+
+    .box h4 { margin: 0 0 8px; font-size: 1.02rem; }
+    .box p { margin: 0; color: var(--muted); font-size: .9rem; }
+
+    .mini-brand {
+      margin: 12px;
+      border: 1px solid #d8e5d4;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, .05);
+    }
+
+    .mini-brand-top {
+      padding: 12px 12px 8px;
+      text-align: center;
+      background: linear-gradient(180deg, #ffffff 0 60%, #e6f5d8 60% 100%);
+      border-bottom: 1px solid #d8e5d4;
+    }
+
+    .mini-brand-top img {
+      width: 180px;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .mini-brand-bottom {
+      background: linear-gradient(120deg, #b3d855, #17983f);
+      color: #fff;
+      font-size: .8rem;
+      font-weight: 700;
+      padding: 8px 12px;
+      text-align: center;
+    }
+
+    .register-panel {
+      margin-top: 12px;
+      border: 1px solid #d9e6d5;
+      background: #f8fcf6;
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .register-panel h5 {
+      margin: 0;
+      font-size: .9rem;
+    }
+
+    .register-panel p {
+      margin: 4px 0 0;
+      color: #60707c;
+      font-size: .8rem;
+      line-height: 1.35;
+    }
+
+    .register-panel.hide {
+      display: none;
+    }
+
+    .input {
+      width: 100%;
+      border: 1px solid #d5e1d3;
+      background: #fbfef9;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 600;
+      padding: 12px;
+      margin-top: 6px;
+      outline: none;
+    }
+
+    .input:focus { border-color: #58b250; box-shadow: 0 0 0 3px rgba(88,178,80,.16); }
+
+    .rut-locked {
+      margin-top: 10px;
+      border: 1px solid #d8e4d6;
+      background: #f7fbf5;
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .rut-locked span {
+      display: block;
+      font-size: .78rem;
+      color: #5b6975;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .rut-locked strong {
+      color: #1a7a35;
+      font-size: .98rem;
+      letter-spacing: .02em;
+    }
+
+    .btn {
+      width: 100%;
+      border: 0;
+      margin-top: 12px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0f923f, #16a544);
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      padding: 12px;
+      cursor: pointer;
+    }
+
+    .btn-soft {
+      width: 100%;
+      border: 1px solid #cfe1c8;
+      background: #eef8ea;
+      color: #2f7136;
+      font: inherit;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: 11px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      min-height: 18px;
+      font-size: .84rem;
+      font-weight: 700;
+    }
+    .feedback.ok { color: var(--ok); }
+    .feedback.error { color: var(--danger); }
+
+    .key-panel {
+      margin-top: 10px;
+      border: 1px solid #d9e6d5;
+      background: #f8fcf6;
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .key-panel h5 {
+      margin: 0;
+      font-size: .9rem;
+    }
+
+    .key-panel p {
+      margin: 4px 0 0;
+      color: #60707c;
+      font-size: .8rem;
+      line-height: 1.35;
+    }
+
+    .key-panel.hide {
+      display: none;
+    }
+
+    .floating-nav {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      display: flex;
+      gap: 8px;
+      z-index: 9;
+    }
+
+    .floating-nav button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 0;
+      font-size: 1.2rem;
+      background: #ffffffde;
+      color: #114f24;
+      box-shadow: 0 6px 16px rgba(0,0,0,.22);
+      cursor: pointer;
+    }
+
+    .presenter {
+      position: fixed;
+      right: 14px;
+      top: 96px;
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 142px;
+      background: #ffffffee;
+      border: 1px solid #d4e1ce;
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow: 0 8px 20px rgba(14, 49, 20, .16);
+    }
+
+    .presenter button {
+      width: 100%;
+      border: 1px solid #cfddca;
+      border-radius: 8px;
+      background: #f6fbf3;
+      color: #2e5c33;
+      font: inherit;
+      font-size: .78rem;
+      font-weight: 700;
+      padding: 6px 8px;
+      cursor: pointer;
+    }
+
+    .presenter button.active {
+      background: #19843a;
+      color: #fff;
+      border-color: #13672c;
+    }
+
+    .presenter .toggle {
+      border-color: #9dc98f;
+      background: #e3f2dc;
+      color: #0f5625;
+    }
+
+    .hide { display: none; }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .left { border-right: 0; border-bottom: 1px solid var(--line); }
+      .right { padding: 16px; }
+      .presenter {
+        top: auto;
+        bottom: 10px;
+        right: 10px;
+        width: 132px;
+      }
+      .phone { width: min(430px, 100%); }
+    }
+  </style>
+</head>
+<body>
+  <div class="presenter" id="presenter">
+    <button class="toggle" id="togglePresenter">Ocultar panel</button>
+    <button data-jump="totem">Totem</button>
+    <button data-jump="rut">RUT</button>
+    <button data-jump="no-account">Sin cuenta</button>
+    <button data-jump="update">Actualizar</button>
+    <button data-jump="profile">Tarjeta</button>
+  </div>
+
+  <main class="layout">
+    <section class="left">
+      <div class="badge">Presentacion interactiva</div>
+      <h1>Cliente Vecino Trebol<br>Flujo completo en telefono</h1>
+      <p class="subtitle">Prototipo navegable para presentar el journey completo: ingreso, activacion de clave, actualizacion de datos y tarjeta digital con beneficios.</p>
+
+      <article class="comment">
+        <span class="step" id="step">Paso 1 de 5</span>
+        <h2 id="title">Escaneo inicial en totem</h2>
+        <p id="text"></p>
+      </article>
+
+      <div class="hint" id="hint"></div>
+    </section>
+
+    <section class="right">
+      <div class="phone">
+        <div class="screen">
+          <div class="ios-status">
+            <span>1:57</span>
+            <span>5G ▰▰▰ 84%</span>
+          </div>
+          <div class="safari">
+            <div class="url-row">
+              <div class="dot-icon" aria-hidden="true"></div>
+              <div class="pill-url">v6card.com</div>
+              <div class="dot-icon" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div class="app">
+            <section class="view active" id="view-totem">
+              <div class="box">
+                <h4>Totem de acceso</h4>
+                <p>Escanea el QR para abrir la experiencia Cliente Vecino en el telefono del cliente.</p>
+                <div style="margin:14px auto 0; width:220px; height:220px; border-radius:16px; border:1px solid #dde6df; background:#fff; display:grid; place-items:center;">
+                  <div style="width:166px; height:166px; border:10px solid #000; background:conic-gradient(from 90deg, #000 25%, #fff 0 50%, #000 0 75%, #fff 0); background-size:20px 20px;"></div>
+                </div>
+                <button class="btn" data-go="rut">Ya escanee, continuar</button>
+              </div>
+            </section>
+
+            <section class="view" id="view-rut">
+              <div class="mini-brand">
+                <div class="mini-brand-top">
+                  <img src="https://assets.bolder.run/themes/8398/logo-trebol.svg?1761159323" alt="Super Trébol">
+                </div>
+                <div class="mini-brand-bottom">Cliente Vecino • Ingresa tu RUT</div>
+              </div>
+              <div class="box">
+                <h4>Ingresa tu RUT</h4>
+                <p>Ingresa solo tu RUT para revisar si ya tienes cuenta Cliente Vecino.</p>
+
+                <div id="rutEntry">
+                  <label for="rutInput" style="font-size:.86rem; color:#54606c; display:block; margin-top:10px;">RUT</label>
+                  <input id="rutInput" class="input" type="text" value="10.383.718-9" placeholder="10.383.718-9">
+                </div>
+                <div id="rutLocked" class="rut-locked hide">
+                  <span>RUT validado</span>
+                  <strong id="rutLockedValue">10.383.718-9</strong>
+                </div>
+                <div id="rutFeedback" class="feedback"></div>
+
+                <div id="keyPanel" class="key-panel hide">
+                  <h5>Genera tu clave de acceso (una sola vez)</h5>
+                  <p>Esta clave te servira para futuros accesos de Cliente Vecino.</p>
+
+                  <label for="keyInput" style="font-size:.83rem; color:#54606c; display:block; margin-top:8px;">Nueva clave</label>
+                  <input id="keyInput" class="input" type="password" placeholder="Minimo 6 caracteres">
+
+                  <label for="keyConfirmInput" style="font-size:.83rem; color:#54606c; display:block; margin-top:8px;">Confirmar clave</label>
+                  <input id="keyConfirmInput" class="input" type="password" placeholder="Repite la clave">
+
+                  <div id="keyFeedback" class="feedback"></div>
+                  <button class="btn" id="createKeyBtn" type="button">Crear clave</button>
+                </div>
+
+                <button class="btn" id="validateRut">Validar RUT</button>
+              </div>
+            </section>
+
+            <section class="view" id="view-no-account">
+              <div class="mini-brand">
+                <div class="mini-brand-top">
+                  <img src="https://assets.bolder.run/themes/8398/logo-trebol.svg?1761159323" alt="Super Trébol">
+                </div>
+                <div class="mini-brand-bottom">Cliente Vecino • Alta rapida de cuenta</div>
+              </div>
+              <div class="box">
+                <h4>RUT no registrado</h4>
+                <p>No encontramos una cuenta activa para este RUT. Puedes registrarte en atencion cliente o volver a intentar.</p>
+                <div class="register-panel" id="registerPanel">
+                  <h5>Crear cuenta Cliente Vecino</h5>
+                  <p>Completa estos datos para habilitar tu tarjeta digital.</p>
+
+                  <label for="registerName" style="font-size:.83rem; color:#54606c; display:block; margin-top:8px;">Nombre completo</label>
+                  <input id="registerName" class="input" type="text" placeholder="Ej: Jaime Cerda Barrera">
+
+                  <label for="registerEmail" style="font-size:.83rem; color:#54606c; display:block; margin-top:8px;">Correo</label>
+                  <input id="registerEmail" class="input" type="email" placeholder="correo@dominio.com">
+
+                  <label for="registerPhone" style="font-size:.83rem; color:#54606c; display:block; margin-top:8px;">Telefono</label>
+                  <input id="registerPhone" class="input" type="tel" placeholder="+56 9 1234 5678">
+
+                  <label for="registerKey" style="font-size:.83rem; color:#54606c; display:block; margin-top:8px;">Clave</label>
+                  <input id="registerKey" class="input" type="password" placeholder="Minimo 6 caracteres">
+
+                  <label for="registerKeyConfirm" style="font-size:.83rem; color:#54606c; display:block; margin-top:8px;">Confirmar clave</label>
+                  <input id="registerKeyConfirm" class="input" type="password" placeholder="Repite la clave">
+
+                  <div id="registerFeedback" class="feedback"></div>
+                  <button class="btn" id="createAccountBtn" type="button">Crear cuenta y entrar</button>
+                </div>
+                <button class="btn" id="backRut">Volver a ingreso RUT</button>
+              </div>
+            </section>
+
+            <section class="view" id="view-update">
+              <div class="mini-brand">
+                <div class="mini-brand-top">
+                  <img src="https://assets.bolder.run/themes/8398/logo-trebol.svg?1761159323" alt="Super Trébol">
+                </div>
+                <div class="mini-brand-bottom">Cliente Vecino • Actualizacion de datos</div>
+              </div>
+              <div class="box">
+                <h4>Actualiza tus datos de contacto</h4>
+                <p>Con esto habilitas comunicaciones de ofertas y recuperacion de beneficios.</p>
+
+                <label for="emailInput" style="font-size:.86rem; color:#54606c; display:block; margin-top:10px;">Correo</label>
+                <input id="emailInput" class="input" type="email" value="jaime.cerda@email.com">
+
+                <label for="phoneInput" style="font-size:.86rem; color:#54606c; display:block; margin-top:10px;">Telefono</label>
+                <input id="phoneInput" class="input" type="tel" value="+56 9 8765 4321">
+
+                <div id="updateFeedback" class="feedback"></div>
+                <button class="btn" id="saveData">Guardar y entrar al perfil</button>
+              </div>
+            </section>
+
+            <section class="view" id="view-profile">
+              <article class="vcard">
+                <header class="cover">
+                  <img src="https://backend.v6card.com/images/1774270292612.jpg" alt="Cabecera Super Trébol">
+                  <div class="circle-logo">
+                    <img id="profileImage" src="https://backend.v6card.com/images/1745259881988.jpg" alt="Foto de perfil cliente">
+                    <button id="editPhotoBtn" class="photo-edit-btn" type="button" title="Editar foto">E</button>
+                  </div>
+                </header>
+                <div class="share-band">Compartir</div>
+
+                <div class="main-body">
+                  <h3 id="profileName">Jaime Cerda Barrera</h3>
+                  <div class="role">Cliente Vecino</div>
+                  <div class="points-highlight">Puntos acumulados <strong id="profilePoints">12.840</strong></div>
+                  <details class="member-accordion">
+                    <summary>Ver datos del cliente</summary>
+                    <div class="member-meta">
+                      <div class="meta-item"><span>RUT</span><strong id="profileRut">10.383.718-9</strong></div>
+                      <div class="meta-item"><span>Correo</span><strong id="profileEmail">jaime.cerda@email.com</strong></div>
+                    </div>
+                  </details>
+
+                  <div class="tabs">
+                    <button class="tab active" data-tab="perfil">Perfil</button>
+                    <button class="tab" data-tab="compras">Mis compras</button>
+                    <button class="tab" data-tab="ofertas">Mis ofertas</button>
+                  </div>
+
+                  <div class="tab-content">
+                    <section class="tab-pane active" id="tab-perfil">
+                      <div class="offers-head">
+                        <h5>La Junta de Ofertas</h5>
+                        <div class="offer-nav">
+                          <button id="offerPrev" type="button" aria-label="Oferta anterior">&#8592;</button>
+                          <button id="offerNext" type="button" aria-label="Oferta siguiente">&#8594;</button>
+                        </div>
+                      </div>
+                      <div class="offers-track" id="offersTrack">
+                        <article class="promo-image-slide">
+                          <img src="./oferta-junta-1.svg" alt="Oferta junta azucar y cafe">
+                        </article>
+                        <article class="promo-image-slide">
+                          <img src="./oferta-junta-2.svg" alt="Oferta junta hamburguesa premium">
+                        </article>
+                        <article class="promo-image-slide">
+                          <img src="./oferta-junta-3.svg" alt="Oferta junta pack fideos pomarola">
+                        </article>
+                      </div>
+                    </section>
+                    <section class="tab-pane" id="tab-compras">
+                      <details class="purchase-accordion">
+                        <summary><span>22/03 • Sala Temuco Centro</span><span class="tag">$48.290</span></summary>
+                        <div class="purchase-body">
+                          <div class="muted">Boleta #TCL-22491 • 11:42 hrs</div>
+                          <div class="purchase-products">
+                            <div class="purchase-row"><span>Azucar Trebol 1Kg x2</span><strong>$1.598</strong></div>
+                            <div class="purchase-row"><span>Cafe Tradicion 150gr x1</span><strong>$5.490</strong></div>
+                            <div class="purchase-row"><span>Papel Higienico 12u x2</span><strong>$11.980</strong></div>
+                            <div class="purchase-row"><span>Frutas y Verduras surtidas</span><strong>$9.340</strong></div>
+                          </div>
+                          <div class="purchase-total"><span>Total compra</span><strong>$48.290</strong></div>
+                        </div>
+                      </details>
+
+                      <details class="purchase-accordion">
+                        <summary><span>16/03 • Sala Prieto Norte</span><span class="tag">$32.120</span></summary>
+                        <div class="purchase-body">
+                          <div class="muted">Boleta #TCL-21903 • 19:17 hrs</div>
+                          <div class="purchase-products">
+                            <div class="purchase-row"><span>Pack 5 Fideos + Pomarola x1</span><strong>$4.390</strong></div>
+                            <div class="purchase-row"><span>Leche semidescremada 1L x6</span><strong>$8.340</strong></div>
+                            <div class="purchase-row"><span>Hamburguesa Premium x4</span><strong>$4.760</strong></div>
+                            <div class="purchase-row"><span>Limpieza hogar varios</span><strong>$7.980</strong></div>
+                          </div>
+                          <div class="purchase-total"><span>Total compra</span><strong>$32.120</strong></div>
+                        </div>
+                      </details>
+
+                      <details class="purchase-accordion">
+                        <summary><span>09/03 • Trebol Online</span><span class="tag">$57.760</span></summary>
+                        <div class="purchase-body">
+                          <div class="muted">Pedido #WEB-90073 • Despacho a domicilio</div>
+                          <div class="purchase-products">
+                            <div class="purchase-row"><span>Carro despensa mensual</span><strong>$31.450</strong></div>
+                            <div class="purchase-row"><span>Carnes y congelados</span><strong>$14.210</strong></div>
+                            <div class="purchase-row"><span>Perfumeria y farmacia</span><strong>$8.700</strong></div>
+                            <div class="purchase-row"><span>Costo despacho</span><strong>$3.400</strong></div>
+                          </div>
+                          <div class="purchase-total"><span>Total compra</span><strong>$57.760</strong></div>
+                        </div>
+                      </details>
+                    </section>
+                    <section class="tab-pane" id="tab-ofertas">
+                      <div class="birthday-banner">
+                        <img src="./oferta-cumple.svg" alt="Oferta especial de cumpleanos">
+                      </div>
+
+                      <details class="offer-accordion">
+                        <summary><span>Azucar Trébol 1 Kg</span><span class="tag">$799 c/u</span></summary>
+                        <div class="offer-body">
+                          <div class="muted">Activa en La Junta de Ofertas. Presenta este codigo en caja.</div>
+                          <div class="offer-code">
+                            <div class="offer-bars" aria-label="Codigo barras oferta azucar"></div>
+                            <p>OF-AZU-799-2026</p>
+                          </div>
+                        </div>
+                      </details>
+
+                      <details class="offer-accordion">
+                        <summary><span>Hamburguesa Premium 100 gr</span><span class="tag">2x $1.190</span></summary>
+                        <div class="offer-body">
+                          <div class="muted">Promo valida por unidad participante. Escanea en caja.</div>
+                          <div class="offer-code">
+                            <div class="offer-bars" aria-label="Codigo barras oferta hamburguesa"></div>
+                            <p>OF-HAM-2X1190-2026</p>
+                          </div>
+                        </div>
+                      </details>
+
+                      <details class="offer-accordion">
+                        <summary><span>Pack 5 Fideos + Pomarola</span><span class="tag">$4.390</span></summary>
+                        <div class="offer-body">
+                          <div class="muted">Oferta combo en categorias despensa y pastas.</div>
+                          <div class="offer-code">
+                            <div class="offer-bars" aria-label="Codigo barras oferta fideos"></div>
+                            <p>OF-PACK-4390-2026</p>
+                          </div>
+                        </div>
+                      </details>
+                    </section>
+                  </div>
+
+                  <div class="barcode">
+                    <div class="bars" aria-label="Codigo de barras"></div>
+                    <p id="barcodeRut">RUT 10.383.718-9</p>
+                  </div>
+                </div>
+              </article>
+
+              <div class="photo-modal hide" id="photoModal">
+                <div class="photo-modal-card">
+                  <h5>Foto de perfil</h5>
+                  <p>Puedes revisar tu foto actual o actualizarla desde tu dispositivo.</p>
+                  <img id="photoPreview" class="photo-preview" src="https://backend.v6card.com/images/1745259881988.jpg" alt="Vista previa foto perfil">
+                  <div class="photo-actions">
+                    <button id="viewPhotoBtn" type="button">Ver imagen actual</button>
+                    <button id="updatePhotoBtn" class="primary" type="button">Actualizar imagen</button>
+                    <button id="closePhotoModalBtn" type="button">Cerrar</button>
+                  </div>
+                </div>
+              </div>
+              <input id="profilePhotoInput" type="file" accept="image/*" class="hide">
+            </section>
+          </div>
+
+          <div class="floating-nav">
+            <button id="prev" title="Anterior">&#8592;</button>
+            <button id="next" title="Siguiente">&#8594;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const flow = ["totem", "rut", "no-account", "update", "profile"];
+    const copy = {
+      totem: {
+        step: "Paso 1 de 5",
+        title: "Inicio en totem",
+        text: "El cliente escanea el QR en sala para abrir la tarjeta digital sin descargar app y comenzar un flujo rapido.",
+        hint: "Que muestra este paso: inicio autoservicio, acceso inmediato y puente entre experiencia fisica y digital."
+      },
+      rut: {
+        step: "Paso 2 de 5",
+        title: "Ingresa tu RUT",
+        text: "Se valida si el cliente ya existe con un dato simple. Si existe, activa su clave de acceso unica en la misma pantalla.",
+        hint: "Que muestra este paso: validacion de identidad simple y bifurcacion automatica del flujo."
+      },
+      "no-account": {
+        step: "Paso 3A de 5",
+        title: "Cliente sin cuenta",
+        text: "Cuando no hay cuenta asociada, el sistema ofrece alta inmediata para capturar al cliente sin friccion.",
+        hint: "Que muestra este paso: recuperacion de conversion con registro guiado dentro del mismo journey."
+      },
+      update: {
+        step: "Paso 3B de 5",
+        title: "Actualizacion de datos",
+        text: "Antes de entrar a su perfil, el cliente confirma correo y telefono para comunicaciones y beneficios personalizados.",
+        hint: "Que muestra este paso: calidad de datos para campanas, notificaciones y trazabilidad comercial."
+      },
+      profile: {
+        step: "Paso 4 de 5",
+        title: "Tarjeta con beneficios",
+        text: "El cliente ve su tarjeta digital con codigo de barras, historial de compras, ofertas canjeables y gestion de foto de perfil.",
+        hint: "Que muestra este paso: fidelizacion medible en caja y autogestion de beneficios desde una sola pantalla."
+      }
+    };
+
+    const views = Object.fromEntries(flow.map((id) => [id, document.getElementById(`view-${id}`)]));
+    const stepEl = document.getElementById("step");
+    const titleEl = document.getElementById("title");
+    const textEl = document.getElementById("text");
+    const hintEl = document.getElementById("hint");
+    const presenter = document.getElementById("presenter");
+    const jumpButtons = [...presenter.querySelectorAll("button[data-jump]")];
+
+    let current = "totem";
+
+    function paint(meta) {
+      stepEl.textContent = meta.step;
+      titleEl.textContent = meta.title;
+      textEl.textContent = meta.text;
+      hintEl.textContent = meta.hint;
+    }
+
+    function setScreen(id) {
+      current = id;
+      Object.entries(views).forEach(([key, node]) => node.classList.toggle("active", key === id));
+      jumpButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.jump === id));
+      paint(copy[id]);
+      refreshPhotoEditVisibility();
+    }
+
+    function nextScreen() {
+      const i = flow.indexOf(current);
+      setScreen(flow[Math.min(flow.length - 1, i + 1)]);
+    }
+
+    function prevScreen() {
+      const i = flow.indexOf(current);
+      setScreen(flow[Math.max(0, i - 1)]);
+    }
+
+    document.getElementById("next").addEventListener("click", nextScreen);
+    document.getElementById("prev").addEventListener("click", prevScreen);
+
+    document.querySelectorAll("[data-go]").forEach((btn) => {
+      btn.addEventListener("click", () => setScreen(btn.dataset.go));
+    });
+
+    jumpButtons.forEach((btn) => {
+      btn.addEventListener("click", () => setScreen(btn.dataset.jump));
+    });
+
+    document.getElementById("togglePresenter").addEventListener("click", (event) => {
+      const hidden = jumpButtons[0].classList.toggle("hide");
+      jumpButtons.forEach((btn) => btn.classList.toggle("hide", hidden));
+      event.target.textContent = hidden ? "Mostrar panel" : "Ocultar panel";
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") nextScreen();
+      if (event.key === "ArrowLeft") prevScreen();
+    });
+
+    const rutInput = document.getElementById("rutInput");
+    const rutFeedback = document.getElementById("rutFeedback");
+    const rutEntry = document.getElementById("rutEntry");
+    const rutLocked = document.getElementById("rutLocked");
+    const rutLockedValue = document.getElementById("rutLockedValue");
+    const profileRut = document.getElementById("profileRut");
+    const profileEmail = document.getElementById("profileEmail");
+    const profilePoints = document.getElementById("profilePoints");
+    const profileName = document.getElementById("profileName");
+    const barcodeRut = document.getElementById("barcodeRut");
+    const keyPanel = document.getElementById("keyPanel");
+    const keyInput = document.getElementById("keyInput");
+    const keyConfirmInput = document.getElementById("keyConfirmInput");
+    const keyFeedback = document.getElementById("keyFeedback");
+    const createKeyBtn = document.getElementById("createKeyBtn");
+    const validateRutBtn = document.getElementById("validateRut");
+    const registerName = document.getElementById("registerName");
+    const registerEmail = document.getElementById("registerEmail");
+    const registerPhone = document.getElementById("registerPhone");
+    const registerKey = document.getElementById("registerKey");
+    const registerKeyConfirm = document.getElementById("registerKeyConfirm");
+    const registerFeedback = document.getElementById("registerFeedback");
+    const profileImage = document.getElementById("profileImage");
+    const editPhotoBtn = document.getElementById("editPhotoBtn");
+    const photoModal = document.getElementById("photoModal");
+    const closePhotoModalBtn = document.getElementById("closePhotoModalBtn");
+    const viewPhotoBtn = document.getElementById("viewPhotoBtn");
+    const updatePhotoBtn = document.getElementById("updatePhotoBtn");
+    const photoPreview = document.getElementById("photoPreview");
+    const profilePhotoInput = document.getElementById("profilePhotoInput");
+    let keyCreated = false;
+    let dataUpdated = false;
+    let loggedIn = false;
+    const memberData = {
+      name: "Jaime Cerda Barrera",
+      rut: "10.383.718-9",
+      email: "jaime.cerda@email.com",
+      points: "12.840",
+      photo: "https://backend.v6card.com/images/1745259881988.jpg"
+    };
+
+    function renderMemberData() {
+      profileName.textContent = memberData.name;
+      profileRut.textContent = memberData.rut;
+      profileEmail.textContent = memberData.email;
+      profilePoints.textContent = memberData.points;
+      barcodeRut.textContent = `RUT ${memberData.rut}`;
+      profileImage.src = memberData.photo;
+      photoPreview.src = memberData.photo;
+    }
+
+    function refreshPhotoEditVisibility() {
+      const showEdit = loggedIn && current === "profile";
+      editPhotoBtn.classList.toggle("hide", !showEdit);
+      if (!showEdit) {
+        photoModal.classList.add("hide");
+        photoPreview.classList.remove("show");
+      }
+    }
+
+    function normalizeRut(value) {
+      return value.replace(/\./g, "").replace(/\s/g, "").toUpperCase();
+    }
+
+    function validRut(value) {
+      return /^\d{7,8}-[\dK]$/.test(normalizeRut(value));
+    }
+
+    function hasAccount(value) {
+      const clean = normalizeRut(value);
+      return clean.endsWith("-9") || clean === "12345678-K";
+    }
+
+    document.getElementById("validateRut").addEventListener("click", () => {
+      const value = rutInput.value.trim();
+      if (!validRut(value)) {
+        rutFeedback.className = "feedback error";
+        rutFeedback.textContent = "RUT invalido. Ejemplo: 10.383.718-9";
+        rutEntry.classList.remove("hide");
+        rutLocked.classList.add("hide");
+        keyPanel.classList.add("hide");
+        validateRutBtn.classList.remove("hide");
+        return;
+      }
+      if (hasAccount(value)) {
+        memberData.rut = value;
+        renderMemberData();
+        if (keyCreated) {
+          loggedIn = true;
+          rutFeedback.className = "feedback ok";
+          rutFeedback.textContent = "Cuenta encontrada. Clave ya registrada, redirigiendo...";
+          rutEntry.classList.remove("hide");
+          rutLocked.classList.add("hide");
+          keyPanel.classList.add("hide");
+          validateRutBtn.classList.remove("hide");
+          setTimeout(() => setScreen(dataUpdated ? "profile" : "update"), 420);
+          return;
+        }
+
+        rutFeedback.className = "feedback ok";
+        rutFeedback.textContent = "Cuenta encontrada. Crea tu clave unica para continuar.";
+        rutLockedValue.textContent = value;
+        rutEntry.classList.add("hide");
+        rutLocked.classList.remove("hide");
+        keyPanel.classList.remove("hide");
+        validateRutBtn.classList.add("hide");
+
+        keyInput.value = "";
+        keyConfirmInput.value = "";
+        keyInput.disabled = false;
+        keyConfirmInput.disabled = false;
+        createKeyBtn.disabled = false;
+        createKeyBtn.textContent = "Crear clave";
+        keyFeedback.className = "feedback";
+        keyFeedback.textContent = "";
+      } else {
+        rutFeedback.className = "feedback error";
+        rutFeedback.textContent = "RUT valido, pero sin cuenta registrada.";
+        rutEntry.classList.remove("hide");
+        rutLocked.classList.add("hide");
+        keyPanel.classList.add("hide");
+        validateRutBtn.classList.remove("hide");
+        setTimeout(() => setScreen("no-account"), 420);
+      }
+    });
+
+    createKeyBtn.addEventListener("click", () => {
+      const key = keyInput.value.trim();
+      const confirmKey = keyConfirmInput.value.trim();
+
+      if (key.length < 6) {
+        keyFeedback.className = "feedback error";
+        keyFeedback.textContent = "La clave debe tener al menos 6 caracteres.";
+        return;
+      }
+
+      if (key !== confirmKey) {
+        keyFeedback.className = "feedback error";
+        keyFeedback.textContent = "Las claves no coinciden.";
+        return;
+      }
+
+      keyCreated = true;
+      loggedIn = true;
+      keyFeedback.className = "feedback ok";
+      keyFeedback.textContent = "Clave creada correctamente (solo una vez).";
+      keyInput.disabled = true;
+      keyConfirmInput.disabled = true;
+      createKeyBtn.disabled = true;
+      createKeyBtn.textContent = "Clave creada";
+      setTimeout(() => setScreen(dataUpdated ? "profile" : "update"), 350);
+    });
+
+    document.getElementById("backRut").addEventListener("click", () => {
+      setScreen("rut");
+      rutInput.value = "10.383.718-9";
+      rutFeedback.textContent = "";
+      rutFeedback.className = "feedback";
+      rutEntry.classList.remove("hide");
+      rutLocked.classList.add("hide");
+      keyPanel.classList.add("hide");
+      validateRutBtn.classList.remove("hide");
+    });
+
+    document.getElementById("saveData").addEventListener("click", () => {
+      const email = document.getElementById("emailInput").value.trim();
+      const phone = document.getElementById("phoneInput").value.trim();
+      const updateFeedback = document.getElementById("updateFeedback");
+      const emailOk = /^\S+@\S+\.\S+$/.test(email);
+      const phoneOk = phone.length >= 8;
+
+      if (!emailOk || !phoneOk) {
+        updateFeedback.className = "feedback error";
+        updateFeedback.textContent = "Revisa correo y telefono.";
+        return;
+      }
+      updateFeedback.className = "feedback ok";
+      updateFeedback.textContent = "Datos actualizados. Entrando al perfil...";
+      memberData.email = email;
+      dataUpdated = true;
+      loggedIn = true;
+      renderMemberData();
+      setTimeout(() => setScreen("profile"), 420);
+    });
+
+    document.getElementById("createAccountBtn").addEventListener("click", () => {
+      const name = registerName.value.trim();
+      const email = registerEmail.value.trim();
+      const phone = registerPhone.value.trim();
+      const key = registerKey.value.trim();
+      const confirm = registerKeyConfirm.value.trim();
+
+      const emailOk = /^\S+@\S+\.\S+$/.test(email);
+      const phoneOk = phone.length >= 8;
+
+      if (!name || !emailOk || !phoneOk || key.length < 6) {
+        registerFeedback.className = "feedback error";
+        registerFeedback.textContent = "Completa nombre, correo, telefono y clave valida.";
+        return;
+      }
+
+      if (key !== confirm) {
+        registerFeedback.className = "feedback error";
+        registerFeedback.textContent = "Las claves no coinciden.";
+        return;
+      }
+
+      memberData.name = name;
+      memberData.rut = rutInput.value.trim() || memberData.rut;
+      memberData.email = email;
+      keyCreated = true;
+      dataUpdated = true;
+      loggedIn = true;
+      renderMemberData();
+
+      registerFeedback.className = "feedback ok";
+      registerFeedback.textContent = "Cuenta creada correctamente. Entrando a tu perfil...";
+      setTimeout(() => setScreen("profile"), 450);
+    });
+
+    const tabs = [...document.querySelectorAll(".tab")];
+    const panes = [...document.querySelectorAll(".tab-pane")];
+    const offersTrack = document.getElementById("offersTrack");
+    const offerPrev = document.getElementById("offerPrev");
+    const offerNext = document.getElementById("offerNext");
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((t) => t.classList.remove("active"));
+        tab.classList.add("active");
+        const target = `tab-${tab.dataset.tab}`;
+        panes.forEach((pane) => pane.classList.toggle("active", pane.id === target));
+      });
+    });
+
+    function slideOffers(direction) {
+      if (!offersTrack) return;
+      const amount = Math.max(240, offersTrack.clientWidth * 0.85);
+      offersTrack.scrollBy({ left: amount * direction, behavior: "smooth" });
+    }
+
+    if (offerPrev && offerNext) {
+      offerPrev.addEventListener("click", () => slideOffers(-1));
+      offerNext.addEventListener("click", () => slideOffers(1));
+    }
+
+    editPhotoBtn.addEventListener("click", () => {
+      if (!loggedIn) return;
+      photoModal.classList.remove("hide");
+    });
+
+    closePhotoModalBtn.addEventListener("click", () => {
+      photoModal.classList.add("hide");
+      photoPreview.classList.remove("show");
+    });
+
+    viewPhotoBtn.addEventListener("click", () => {
+      photoPreview.classList.toggle("show");
+    });
+
+    updatePhotoBtn.addEventListener("click", () => {
+      profilePhotoInput.click();
+    });
+
+    profilePhotoInput.addEventListener("change", (event) => {
+      const [file] = event.target.files || [];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        memberData.photo = reader.result;
+        renderMemberData();
+        photoPreview.classList.add("show");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    photoModal.addEventListener("click", (event) => {
+      if (event.target === photoModal) {
+        photoModal.classList.add("hide");
+        photoPreview.classList.remove("show");
+      }
+    });
+
+    renderMemberData();
+    setScreen("totem");
+  </script>
+</body>
+</html>
