@@ -1676,6 +1676,8 @@
       border-radius: 12px;
       background: #f5fbf2;
       padding: 10px 12px;
+      display: grid;
+      gap: 10px;
     }
 
     .mobile-link p {
@@ -1695,6 +1697,29 @@
       font-weight: 800;
       border-radius: 999px;
       padding: 8px 12px;
+    }
+
+    .mobile-qr {
+      display: grid;
+      justify-items: center;
+      gap: 6px;
+      text-align: center;
+    }
+
+    .mobile-qr img {
+      width: 132px;
+      height: 132px;
+      border-radius: 10px;
+      border: 1px solid #cfe2c9;
+      background: #fff;
+      padding: 6px;
+    }
+
+    .mobile-qr span {
+      font-size: .72rem;
+      color: #587064;
+      font-weight: 600;
+      word-break: break-all;
     }
 
     body.mobile-mode .presenter,
@@ -1783,6 +1808,10 @@
       <div class="mobile-link">
         <p>Vista directa para celular (sin marco de demo):</p>
         <a href="?mobile=1" target="_blank" rel="noopener noreferrer">Abrir perfil en movil</a>
+        <div class="mobile-qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3A%2F%2Fcroamora.github.io%2F%3Fmobile%3D1" alt="QR para abrir vista movil">
+          <span>https://croamora.github.io/?mobile=1</span>
+        </div>
       </div>
     </section>
 
