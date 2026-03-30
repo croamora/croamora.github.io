@@ -776,8 +776,9 @@
       border: 1px solid #b9d4b1;
       background: linear-gradient(145deg, #f8fdf6, #e5f2de);
       color: #1f6a30;
-      display: grid;
-      place-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font: inherit;
       font-weight: 800;
       cursor: pointer;
@@ -788,13 +789,9 @@
     }
 
     .joy-btn span {
-      font-size: 1.2rem;
+      font-size: 2rem;
       line-height: 1;
-    }
-
-    .joy-btn small {
-      font-size: .72rem;
-      line-height: 1;
+      font-weight: 900;
     }
 
     .joy-btn.up { grid-column: 2; grid-row: 1; }
@@ -812,24 +809,6 @@
       box-shadow: 0 6px 12px rgba(19, 88, 35, .24);
     }
 
-    .joy-core {
-      grid-column: 2;
-      grid-row: 2;
-      width: 100%;
-      height: 100%;
-      border-radius: 18px;
-      border: 1px solid #b8d4b0;
-      background: linear-gradient(145deg, #e8f4e3, #d9ecd2);
-      color: #32683b;
-      font-size: .82rem;
-      font-weight: 800;
-      display: grid;
-      place-items: center;
-      user-select: none;
-      pointer-events: none;
-      z-index: 1;
-    }
-
     @media (max-width: 420px) {
       .snake-joystick {
         width: min(100%, 336px);
@@ -841,9 +820,7 @@
         min-height: 78px;
       }
 
-      .joy-btn small {
-        font-size: .69rem;
-      }
+      .joy-btn span { font-size: 2.2rem; }
     }
 
     .snake-history {
@@ -2108,11 +2085,10 @@
                           <button class="btn-soft" id="snakeReset" type="button">Reiniciar</button>
                         </div>
                         <div class="snake-joystick" aria-label="Joystick tactil del juego">
-                          <button class="joy-btn up" type="button" data-snake-dir="up" aria-label="Mover arriba"><span>&uarr;</span><small>Arriba</small></button>
-                          <button class="joy-btn left" type="button" data-snake-dir="left" aria-label="Mover izquierda"><span>&larr;</span><small>Izq</small></button>
-                          <button class="joy-btn right" type="button" data-snake-dir="right" aria-label="Mover derecha"><span>&rarr;</span><small>Der</small></button>
-                          <button class="joy-btn down" type="button" data-snake-dir="down" aria-label="Mover abajo"><span>&darr;</span><small>Abajo</small></button>
-                          <div class="joy-core" aria-hidden="true">Joy</div>
+                          <button class="joy-btn up" type="button" data-snake-dir="up" aria-label="Mover arriba"><span>&uarr;</span></button>
+                          <button class="joy-btn left" type="button" data-snake-dir="left" aria-label="Mover izquierda"><span>&larr;</span></button>
+                          <button class="joy-btn right" type="button" data-snake-dir="right" aria-label="Mover derecha"><span>&rarr;</span></button>
+                          <button class="joy-btn down" type="button" data-snake-dir="down" aria-label="Mover abajo"><span>&darr;</span></button>
                         </div>
                         <div class="snake-history">
                           <span>Ultimos puntajes</span>
