@@ -256,7 +256,7 @@
       background: #fff;
       display: grid;
       place-items: center;
-      overflow: hidden;
+      overflow: visible;
       box-shadow: 0 10px 18px rgba(21, 70, 27, .18);
       z-index: 4;
     }
@@ -267,25 +267,34 @@
       object-fit: cover;
       object-position: center center;
       cursor: pointer;
+      border-radius: 50%;
     }
 
     .photo-edit-btn {
       position: absolute;
-      right: 6px;
-      bottom: 6px;
-      width: 36px;
-      height: 36px;
+      right: -2px;
+      bottom: -2px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      border: 2px solid #fff;
+      border: 3px solid #fff;
       background: linear-gradient(135deg, #0f913f, #17853b);
       color: #fff;
-      font-size: 1rem;
-      font-weight: 800;
       cursor: pointer;
       box-shadow: 0 5px 10px rgba(16, 68, 27, .25);
       display: grid;
       place-items: center;
-      z-index: 6;
+      z-index: 8;
+    }
+
+    .photo-edit-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .photo-edit-btn.hide {
@@ -1960,7 +1969,9 @@
                   <img src="https://backend.v6card.com/images/1774270292612.jpg" alt="Cabecera Super Trébol">
                   <div class="circle-logo">
                     <img id="profileImage" src="https://backend.v6card.com/images/1745259881988.jpg" alt="Foto de perfil cliente">
-                    <button id="editPhotoBtn" class="photo-edit-btn" type="button" title="Editar foto">E</button>
+                    <button id="editPhotoBtn" class="photo-edit-btn" type="button" title="Editar foto" aria-label="Editar foto">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="m16.5 3.5 4 4L8 20l-5 1 1-5z"/></svg>
+                    </button>
                   </div>
                 </header>
                 <div class="share-band">Compartir</div>
