@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Demo Trébol - Flujo Interactivo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
@@ -327,6 +328,93 @@
       line-height: 1.35;
     }
 
+    .scanner-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 20, 28, .72);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      z-index: 16;
+    }
+
+    .scanner-modal.hide {
+      display: none;
+    }
+
+    .scanner-modal-card {
+      width: 100%;
+      max-width: 330px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid #d8e4d3;
+      padding: 12px;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, .28);
+      text-align: left;
+    }
+
+    .scanner-modal-card h5 {
+      margin: 0;
+      font-size: .95rem;
+      color: #1f2d38;
+    }
+
+    .scanner-modal-card p {
+      margin: 5px 0 10px;
+      color: #64707c;
+      font-size: .8rem;
+      line-height: 1.35;
+    }
+
+    .scanner-viewport {
+      width: 100%;
+      border: 1px solid #cfe0c9;
+      border-radius: 12px;
+      height: 190px;
+      background:
+        linear-gradient(180deg, rgba(14, 38, 19, .35), rgba(12, 31, 16, .6)),
+        radial-gradient(circle at 20% 20%, rgba(160, 213, 156, .16), transparent 42%),
+        #1d2a1f;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    .scanner-reticle {
+      position: absolute;
+      inset: 26% 20%;
+      border: 2px solid rgba(173, 227, 160, .9);
+      border-radius: 10px;
+      box-shadow: 0 0 0 1px rgba(15, 68, 28, .4), 0 0 16px rgba(114, 203, 103, .4);
+    }
+
+    .scanner-reticle::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 48%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #8dff75, transparent);
+      box-shadow: 0 0 12px rgba(141, 255, 117, .8);
+    }
+
+    .scanner-tip {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 1px solid #7ab471;
+      background: #0f2f17d8;
+      color: #d8ffd0;
+      font-size: .74rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+
     .photo-preview {
       width: 100%;
       border-radius: 12px;
@@ -555,6 +643,564 @@
     .tab-content { margin-top: 10px; }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
+
+    .services-intro {
+      text-align: left;
+      font-size: .8rem;
+      color: #4f5d6a;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .service-chip {
+      min-height: 44px;
+      border: 1px solid #d5e5d0;
+      border-radius: 10px;
+      background: #f7fcf4;
+      color: #2a5d30;
+      font: inherit;
+      font-size: .78rem;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .service-chip.active {
+      border-color: #95c886;
+      background: #e7f5e1;
+      color: #0f6028;
+      box-shadow: 0 3px 10px rgba(20, 85, 33, .12);
+    }
+
+    .service-panel {
+      display: none;
+      text-align: left;
+      border: 1px solid #d8e4d3;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .service-panel.active {
+      display: block;
+    }
+
+    .service-panel h5 {
+      margin: 0;
+      font-size: .9rem;
+      color: #1e2f3b;
+    }
+
+    .service-panel p {
+      margin: 5px 0 10px;
+      color: #5e6d79;
+      font-size: .8rem;
+      line-height: 1.35;
+    }
+
+    .service-label {
+      font-size: .78rem;
+      color: #54606c;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .snake-canvas {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #cfe1ca;
+      background: #f7fcf5;
+      display: block;
+    }
+
+    .snake-meta {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .82rem;
+      color: #3b4b57;
+      font-weight: 700;
+    }
+
+    .snake-meta strong {
+      color: #14682d;
+      font-size: .95rem;
+    }
+
+    .snake-controls {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .snake-joystick {
+      margin-top: 10px;
+      position: relative;
+      width: 248px;
+      height: 248px;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 50%;
+      border: 1px solid #d6e6d1;
+      background: radial-gradient(circle at 30% 30%, #fbfef9 0%, #e8f3e3 75%);
+      box-shadow: inset 0 4px 14px rgba(31, 88, 40, .11);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 18px;
+    }
+
+    .snake-joystick::before {
+      content: "";
+      position: absolute;
+      inset: 20px;
+      border: 1px dashed rgba(68, 130, 74, .24);
+      border-radius: 50%;
+    }
+
+    .joy-btn {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 1px solid #b9d4b1;
+      background: linear-gradient(145deg, #f8fdf6, #e5f2de);
+      color: #1f6a30;
+      display: grid;
+      place-items: center;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(19, 88, 35, .12);
+      min-height: 62px;
+    }
+
+    .joy-btn span {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .joy-btn small {
+      font-size: .62rem;
+      line-height: 1;
+    }
+
+    .joy-btn.up { grid-column: 2; grid-row: 1; }
+    .joy-btn.left { grid-column: 1; grid-row: 2; }
+    .joy-btn.right { grid-column: 3; grid-row: 2; }
+    .joy-btn.down { grid-column: 2; grid-row: 3; }
+
+    .joy-btn:active {
+      transform: scale(.96);
+    }
+
+    .joy-btn.active {
+      border-color: #8bbc7f;
+      background: linear-gradient(145deg, #eef8ea, #dcedd3);
+      box-shadow: 0 6px 12px rgba(19, 88, 35, .24);
+    }
+
+    .joy-core {
+      grid-column: 2;
+      grid-row: 2;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 1px solid #b8d4b0;
+      background: linear-gradient(145deg, #e8f4e3, #d9ecd2);
+      color: #32683b;
+      font-size: .82rem;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      user-select: none;
+    }
+
+    .snake-history {
+      margin-top: 10px;
+      border: 1px solid #d6e4d1;
+      border-radius: 10px;
+      background: #f8fcf6;
+      padding: 8px;
+      font-size: .76rem;
+      color: #3f4f5b;
+      font-weight: 700;
+    }
+
+    .snake-history span {
+      display: block;
+      margin-bottom: 4px;
+      color: #2a5e31;
+    }
+
+    .calc-rows {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .calc-row {
+      border: 1px solid #dce8d7;
+      border-radius: 10px;
+      background: #fbfef9;
+      padding: 8px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .calc-row-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr .7fr;
+      gap: 6px;
+    }
+
+    .calc-row-grid .input {
+      margin-top: 0;
+      padding: 9px;
+      font-size: .8rem;
+    }
+
+    .calc-row-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .78rem;
+      color: #31404c;
+      font-weight: 700;
+    }
+
+    .calc-row-foot button {
+      border: 1px solid #e2d3d3;
+      background: #fff5f5;
+      color: #9f2c2c;
+      border-radius: 8px;
+      font: inherit;
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 5px 8px;
+      cursor: pointer;
+      min-height: 32px;
+    }
+
+    .calc-total {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #cee3c7;
+      background: #ecf8e8;
+      border-radius: 10px;
+      padding: 8px 10px;
+      color: #114f24;
+      font-size: .82rem;
+      font-weight: 800;
+    }
+
+    .scanner-result {
+      margin-top: 8px;
+      border: 1px solid #dce8d7;
+      border-radius: 10px;
+      background: #fafdf8;
+      padding: 10px;
+      font-size: .8rem;
+      color: #3a4a56;
+      line-height: 1.35;
+    }
+
+    .stores-list {
+      margin-top: 8px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .stores-map {
+      margin-top: 8px;
+      height: 224px;
+      border: 1px solid #d8e5d3;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stores-map-wrap {
+      margin-top: 8px;
+      position: relative;
+    }
+
+    .map-loading {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      background: rgba(240, 248, 236, .85);
+      border: 1px solid #d8e5d3;
+      display: grid;
+      place-items: center;
+      color: #2f6f37;
+      font-size: .82rem;
+      font-weight: 800;
+      z-index: 500;
+      backdrop-filter: blur(1px);
+    }
+
+    .stores-map .leaflet-control-attribution {
+      font-size: .58rem;
+      background: rgba(255, 255, 255, .78);
+    }
+
+    .store-card {
+      border: 1px solid #dbe7d6;
+      border-radius: 10px;
+      background: #fbfef9;
+      padding: 9px;
+    }
+
+    .store-card.active {
+      border-color: #9acb8d;
+      background: #f0f9ec;
+      box-shadow: 0 6px 12px rgba(24, 95, 38, .12);
+    }
+
+    .store-card strong {
+      display: block;
+      font-size: .82rem;
+      color: #223240;
+      margin-bottom: 4px;
+    }
+
+    .store-card span {
+      display: block;
+      font-size: .75rem;
+      color: #5a6874;
+      margin-bottom: 6px;
+    }
+
+    .store-card a {
+      font-size: .74rem;
+      color: #186f31;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .terms-check {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      font-size: .8rem;
+      color: #32404d;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .terms-check input {
+      margin-top: 3px;
+      width: 18px;
+      height: 18px;
+    }
+
+    .inline-terms {
+      margin-top: 10px;
+    }
+
+    .terms-link {
+      margin-top: 8px;
+      display: inline-block;
+      color: #15712f;
+      font-size: .78rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .terms-text {
+      margin-top: 8px;
+      border: 1px solid #d8e5d3;
+      border-radius: 10px;
+      background: #f8fcf6;
+      padding: 9px;
+      color: #445260;
+      font-size: .76rem;
+      line-height: 1.35;
+    }
+
+    .social-footer {
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      border-top: 1px solid #dbe6d6;
+      padding-top: 12px;
+    }
+
+    .social-footer a {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid #cfe0c9;
+      background: #eff8ea;
+      display: grid;
+      place-items: center;
+      color: #186f31;
+      text-decoration: none;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .social-footer a:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 10px rgba(21, 90, 35, .18);
+    }
+
+    .social-footer svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .benefits-btn {
+      margin-top: 8px;
+      margin-bottom: 2px;
+      border-color: #b8d8ea;
+      background: #eaf5fd;
+      color: #1669a8;
+    }
+
+    .benefits-page {
+      padding: 12px;
+      background: #eff3f7;
+      min-height: 100%;
+    }
+
+    .benefits-top {
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid #dde7ee;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .benefits-logo {
+      color: #2a66a8;
+      font-weight: 800;
+      font-size: .95rem;
+    }
+
+    .benefits-back {
+      border: 1px solid #c8d7e3;
+      background: #f5f9fc;
+      color: #30506d;
+      border-radius: 999px;
+      font: inherit;
+      font-size: .74rem;
+      font-weight: 700;
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+
+    .benefits-title {
+      margin: 10px 0 8px;
+      color: #1b7cc7;
+      font-size: 1.15rem;
+    }
+
+    .benefit-highlight {
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #d8e3ea;
+      background: #fff;
+      box-shadow: 0 8px 16px rgba(41, 71, 95, .08);
+    }
+
+    .benefit-highlight img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .benefit-highlight-body {
+      padding: 10px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .benefit-highlight-body strong {
+      color: #12253a;
+      font-size: .95rem;
+    }
+
+    .benefit-highlight-body span {
+      color: #5a6c7b;
+      font-size: .78rem;
+    }
+
+    .benefits-filter {
+      width: 100%;
+      border: 0;
+      border-radius: 999px;
+      background: #1787d4;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      padding: 11px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .benefits-list {
+      display: grid;
+      gap: 8px;
+      padding-bottom: 20px;
+    }
+
+    .benefit-card {
+      border: 1px solid #d6e2ea;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+      box-shadow: 0 4px 12px rgba(42, 66, 88, .06);
+      display: grid;
+      gap: 4px;
+    }
+
+    .benefit-card strong {
+      color: #182b41;
+      font-size: .86rem;
+    }
+
+    .benefit-card span {
+      color: #566a7a;
+      font-size: .76rem;
+    }
+
+    .profile-shortcuts {
+      margin: 8px 0 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .profile-shortcuts button {
+      min-height: 42px;
+      border: 1px solid #d3e3ce;
+      border-radius: 10px;
+      background: #f4faf1;
+      color: #2a6232;
+      font: inherit;
+      font-size: .78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
 
     .offers-head {
       display: flex;
@@ -1027,6 +1673,77 @@
       color: #0f5625;
     }
 
+    .mobile-link {
+      margin-top: 14px;
+      border: 1px solid #c9ddc2;
+      border-radius: 12px;
+      background: #f5fbf2;
+      padding: 10px 12px;
+    }
+
+    .mobile-link p {
+      margin: 0 0 8px;
+      font-size: .8rem;
+      color: #4d5f6b;
+      line-height: 1.35;
+    }
+
+    .mobile-link a {
+      display: inline-block;
+      text-decoration: none;
+      border: 1px solid #a8d099;
+      background: #e6f5df;
+      color: #1c6f31;
+      font-size: .8rem;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 8px 12px;
+    }
+
+    body.mobile-mode .presenter,
+    body.mobile-mode .left,
+    body.mobile-mode .floating-nav,
+    body.mobile-mode .ios-status,
+    body.mobile-mode .safari {
+      display: none;
+    }
+
+    body.mobile-mode .layout {
+      display: block;
+      min-height: 100dvh;
+    }
+
+    body.mobile-mode .right {
+      padding: 0;
+      display: block;
+    }
+
+    body.mobile-mode .phone {
+      width: 100%;
+      max-width: none;
+      aspect-ratio: auto;
+      min-height: 100dvh;
+      border-radius: 0;
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    body.mobile-mode .phone::before {
+      display: none;
+    }
+
+    body.mobile-mode .screen {
+      border-radius: 0;
+      border: 0;
+      min-height: 100dvh;
+    }
+
+    body.mobile-mode .app {
+      height: 100dvh;
+      padding-bottom: 16px;
+    }
+
     .hide { display: none; }
 
     @media (max-width: 980px) {
@@ -1066,6 +1783,10 @@
       </article>
 
       <div class="hint" id="hint"></div>
+      <div class="mobile-link">
+        <p>Vista directa para celular (sin marco de demo):</p>
+        <a href="?mobile=1" target="_blank" rel="noopener noreferrer">Abrir perfil en movil</a>
+      </div>
     </section>
 
     <section class="right">
@@ -1126,6 +1847,13 @@
                   <label for="keyConfirmInput" style="font-size:.83rem; color:#54606c; display:block; margin-top:8px;">Confirmar clave</label>
                   <input id="keyConfirmInput" class="input" type="password" placeholder="Repite la clave">
 
+                  <label class="terms-check inline-terms">
+                    <input id="keyTermsCheckbox" type="checkbox">
+                    <span>Acepto terminos y uso de datos personales.</span>
+                  </label>
+                  <a class="terms-link" href="#" id="keyTermsLink">Ver terminos resumidos</a>
+                  <div id="keyTermsText" class="terms-text hide">Tus datos se usan para validar beneficios, historial de compras y comunicaciones de ofertas. Puedes solicitar actualizacion o eliminacion de datos en atencion al cliente.</div>
+
                   <div id="keyFeedback" class="feedback"></div>
                   <button class="btn" id="createKeyBtn" type="button">Crear clave</button>
                 </div>
@@ -1162,6 +1890,13 @@
 
                   <label for="registerKeyConfirm" style="font-size:.83rem; color:#54606c; display:block; margin-top:8px;">Confirmar clave</label>
                   <input id="registerKeyConfirm" class="input" type="password" placeholder="Repite la clave">
+
+                  <label class="terms-check inline-terms">
+                    <input id="registerTermsCheckbox" type="checkbox">
+                    <span>Acepto terminos y uso de datos personales.</span>
+                  </label>
+                  <a class="terms-link" href="#" id="registerTermsLink">Ver terminos resumidos</a>
+                  <div id="registerTermsText" class="terms-text hide">Tus datos se usan para validar beneficios, historial de compras y comunicaciones de ofertas. Puedes solicitar actualizacion o eliminacion de datos en atencion al cliente.</div>
 
                   <div id="registerFeedback" class="feedback"></div>
                   <button class="btn" id="createAccountBtn" type="button">Crear cuenta y entrar</button>
@@ -1214,11 +1949,17 @@
                       <div class="meta-item"><span>Correo</span><strong id="profileEmail">jaime.cerda@email.com</strong></div>
                     </div>
                   </details>
+                  <button id="openBenefitsBtn" class="btn-soft benefits-btn" type="button">Ver beneficios</button>
 
                   <div class="tabs">
                     <button class="tab active" data-tab="perfil">Perfil</button>
-                    <button class="tab" data-tab="compras">Mis compras</button>
-                    <button class="tab" data-tab="ofertas">Mis ofertas</button>
+                    <button class="tab" data-tab="locales">Locales</button>
+                    <button class="tab" data-tab="servicios">Servicios</button>
+                  </div>
+
+                  <div class="profile-shortcuts">
+                    <button id="profileComprasBtn" type="button">Mis compras</button>
+                    <button id="profileOfertasBtn" type="button">Mis ofertas</button>
                   </div>
 
                   <div class="tab-content">
@@ -1323,12 +2064,92 @@
                         </div>
                       </details>
                     </section>
+                    <section class="tab-pane" id="tab-servicios">
+                      <div class="services-intro">
+                        Accede rapido a herramientas de tu tarjeta Cliente Vecino.
+                      </div>
+
+                      <div class="services-grid" id="servicesGrid">
+                        <button class="service-chip active" type="button" data-service="scanner">Scanner</button>
+                        <button class="service-chip" type="button" data-service="game">Juego</button>
+                        <button class="service-chip" type="button" data-service="calculator">Calculadora</button>
+                      </div>
+
+                      <div class="service-panel" id="service-game">
+                        <h5>Juego Snake Trebol</h5>
+                        <p>Come logos del Super Trebol para sumar puntos.</p>
+                        <canvas id="snakeCanvas" class="snake-canvas" width="300" height="220" aria-label="Juego Snake Trebol"></canvas>
+                        <div class="snake-meta">
+                          <span>Puntaje</span>
+                          <strong id="snakeScore">0</strong>
+                        </div>
+                        <div class="snake-controls">
+                          <button class="btn-soft" id="snakeStart" type="button">Iniciar / Pausar</button>
+                          <button class="btn-soft" id="snakeReset" type="button">Reiniciar</button>
+                        </div>
+                        <div class="snake-joystick" aria-label="Joystick tactil del juego">
+                          <button class="joy-btn up" type="button" data-snake-dir="up" aria-label="Mover arriba"><span>&uarr;</span><small>Arriba</small></button>
+                          <button class="joy-btn left" type="button" data-snake-dir="left" aria-label="Mover izquierda"><span>&larr;</span><small>Izquierda</small></button>
+                          <button class="joy-btn right" type="button" data-snake-dir="right" aria-label="Mover derecha"><span>&rarr;</span><small>Derecha</small></button>
+                          <button class="joy-btn down" type="button" data-snake-dir="down" aria-label="Mover abajo"><span>&darr;</span><small>Abajo</small></button>
+                          <div class="joy-core" aria-hidden="true">Joy</div>
+                        </div>
+                        <div class="snake-history">
+                          <span>Ultimos puntajes</span>
+                          <div id="snakeHistory">Sin partidas aun.</div>
+                        </div>
+                      </div>
+
+                      <div class="service-panel" id="service-calculator">
+                        <h5>Calculadora de compras</h5>
+                        <p>Arma un calculo rapido de tu carro antes de pagar.</p>
+                        <div id="calcRows" class="calc-rows"></div>
+                        <button class="btn-soft" id="calcAddRow" type="button">Agregar producto</button>
+                        <div class="calc-total"><span>Total estimado</span><strong id="calcGrandTotal">$0</strong></div>
+                      </div>
+
+                      <div class="service-panel active" id="service-scanner">
+                        <h5>Scanner de precios (demo)</h5>
+                        <p>Abre la camara demo y toca la pantalla para leer un producto.</p>
+                        <label for="scannerCodeInput" class="service-label">Codigo del producto</label>
+                        <input id="scannerCodeInput" class="input" type="text" placeholder="Ej: 7801000000012">
+                        <button class="btn-soft" id="scannerRun" type="button">Abrir camara demo</button>
+                        <div id="scannerResult" class="scanner-result">Aun no hay lecturas.</div>
+                      </div>
+
+                    </section>
+
+                    <section class="tab-pane" id="tab-locales">
+                      <div class="service-panel active">
+                        <h5>Mapa de locales por ciudad</h5>
+                        <p>Revisa direcciones y abre la ruta en Google Maps.</p>
+                        <label for="citySelect" class="service-label">Ciudad</label>
+                        <select id="citySelect" class="input"></select>
+                        <div class="stores-map-wrap">
+                          <div id="storesMap" class="stores-map" aria-label="Mapa de locales"></div>
+                          <div id="storesLoading" class="map-loading hide">Cargando mapa...</div>
+                        </div>
+                        <div id="storesList" class="stores-list"></div>
+                      </div>
+                    </section>
                   </div>
 
                   <div class="barcode">
                     <div class="bars" aria-label="Codigo de barras"></div>
                     <p id="barcodeRut">RUT 10.383.718-9</p>
                   </div>
+
+                  <footer class="social-footer" aria-label="Redes sociales">
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm10 2H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3zm-5 3.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM17.5 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>
+                    </a>
+                    <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" aria-label="TikTok" title="TikTok">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3c.3 1.8 1.4 3.2 3 4 .9.4 1.8.6 2.8.6V10c-1.6 0-3.2-.4-4.6-1.2V15a6 6 0 1 1-5.2-6v2.4a3.6 3.6 0 1 0 2.8 3.5V3h1.2z"/></svg>
+                    </a>
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 22v-8h3l.5-4H13V7.6c0-1.2.3-2 2-2h1.7V2.2c-.3 0-1.4-.2-2.7-.2-2.7 0-4.5 1.6-4.5 4.7V10H7v4h2.5v8H13z"/></svg>
+                    </a>
+                  </footer>
                 </div>
               </article>
 
@@ -1344,7 +2165,47 @@
                   </div>
                 </div>
               </div>
+
+              <div class="scanner-modal hide" id="scannerModal">
+                <div class="scanner-modal-card">
+                  <h5>Camara demo - lector de precios</h5>
+                  <p>Apunta al codigo y toca la pantalla para simular el escaneo.</p>
+                  <button id="scannerViewport" class="scanner-viewport" type="button" aria-label="Tocar para escanear">
+                    <span class="scanner-reticle" aria-hidden="true"></span>
+                    <span class="scanner-tip">Toca para escanear</span>
+                  </button>
+                  <button id="closeScannerBtn" type="button" class="btn-soft">Cerrar camara</button>
+                </div>
+              </div>
               <input id="profilePhotoInput" type="file" accept="image/*" class="hide">
+            </section>
+
+            <section class="view" id="view-benefits">
+              <div class="benefits-page">
+                <div class="benefits-top">
+                  <div class="benefits-logo">Club de Beneficios</div>
+                  <button id="backToProfileBtn" class="benefits-back" type="button">Volver</button>
+                </div>
+
+                <h4 class="benefits-title">Destacados</h4>
+                <article class="benefit-highlight">
+                  <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80" alt="Beneficio destacado en restaurantes">
+                  <div class="benefit-highlight-body">
+                    <strong>15% descuento marzo 2026</strong>
+                    <span>Estancia Brava - valido de lunes a jueves</span>
+                  </div>
+                </article>
+
+                <h4 class="benefits-title">Todos los beneficios</h4>
+                <button class="benefits-filter" type="button">Filtrar beneficios</button>
+
+                <div class="benefits-list">
+                  <article class="benefit-card"><strong>Farmacia Salud+</strong><span>10% en medicamentos seleccionados</span></article>
+                  <article class="benefit-card"><strong>Cine Plaza</strong><span>2x1 en entradas martes y miercoles</span></article>
+                  <article class="benefit-card"><strong>Asesorium</strong><span>20% en cursos de gestion y mejora continua</span></article>
+                  <article class="benefit-card"><strong>Gimnasio Urban Fit</strong><span>Matricula gratis + 1 semana de prueba</span></article>
+                </div>
+              </div>
             </section>
           </div>
 
@@ -1357,8 +2218,9 @@
     </section>
   </main>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    const flow = ["totem", "rut", "no-account", "update", "profile"];
+    const flow = ["totem", "rut", "no-account", "update", "profile", "benefits"];
     const copy = {
       totem: {
         step: "Paso 1 de 5",
@@ -1385,10 +2247,16 @@
         hint: "Que muestra este paso: calidad de datos para campanas, notificaciones y trazabilidad comercial."
       },
       profile: {
-        step: "Paso 4 de 5",
+        step: "Paso 4 de 6",
         title: "Tarjeta con beneficios",
         text: "El cliente ve su tarjeta digital con codigo de barras, historial de compras, ofertas canjeables y gestion de foto de perfil.",
         hint: "Que muestra este paso: fidelizacion medible en caja y autogestion de beneficios desde una sola pantalla."
+      },
+      benefits: {
+        step: "Paso 5 de 6",
+        title: "Club de beneficios",
+        text: "Desde su tarjeta, el cliente entra a una vitrina de beneficios destacados y convenios vigentes para usar su membresia.",
+        hint: "Que muestra este paso: extension de valor con alianzas, descuentos y activaciones de alto uso."
       }
     };
 
@@ -1399,6 +2267,9 @@
     const hintEl = document.getElementById("hint");
     const presenter = document.getElementById("presenter");
     const jumpButtons = [...presenter.querySelectorAll("button[data-jump]")];
+    const urlParams = new URLSearchParams(window.location.search);
+    const mobileMode = urlParams.get("mobile") === "1";
+    const mobileView = urlParams.get("view");
 
     let current = "totem";
 
@@ -1445,6 +2316,15 @@
     });
 
     document.addEventListener("keydown", (event) => {
+      const servicesActive = document.getElementById("tab-servicios")?.classList.contains("active");
+      if (servicesActive && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+        event.preventDefault();
+        if (event.key === "ArrowUp") setSnakeDirection("up");
+        if (event.key === "ArrowDown") setSnakeDirection("down");
+        if (event.key === "ArrowLeft") setSnakeDirection("left");
+        if (event.key === "ArrowRight") setSnakeDirection("right");
+        return;
+      }
       if (event.key === "ArrowRight") nextScreen();
       if (event.key === "ArrowLeft") prevScreen();
     });
@@ -1462,6 +2342,9 @@
     const keyPanel = document.getElementById("keyPanel");
     const keyInput = document.getElementById("keyInput");
     const keyConfirmInput = document.getElementById("keyConfirmInput");
+    const keyTermsCheckbox = document.getElementById("keyTermsCheckbox");
+    const keyTermsLink = document.getElementById("keyTermsLink");
+    const keyTermsText = document.getElementById("keyTermsText");
     const keyFeedback = document.getElementById("keyFeedback");
     const createKeyBtn = document.getElementById("createKeyBtn");
     const validateRutBtn = document.getElementById("validateRut");
@@ -1470,7 +2353,15 @@
     const registerPhone = document.getElementById("registerPhone");
     const registerKey = document.getElementById("registerKey");
     const registerKeyConfirm = document.getElementById("registerKeyConfirm");
+    const registerTermsCheckbox = document.getElementById("registerTermsCheckbox");
+    const registerTermsLink = document.getElementById("registerTermsLink");
+    const registerTermsText = document.getElementById("registerTermsText");
     const registerFeedback = document.getElementById("registerFeedback");
+    const openBenefitsBtn = document.getElementById("openBenefitsBtn");
+    const backToProfileBtn = document.getElementById("backToProfileBtn");
+    const profileShortcuts = document.querySelector(".profile-shortcuts");
+    const profileComprasBtn = document.getElementById("profileComprasBtn");
+    const profileOfertasBtn = document.getElementById("profileOfertasBtn");
     const profileImage = document.getElementById("profileImage");
     const editPhotoBtn = document.getElementById("editPhotoBtn");
     const photoModal = document.getElementById("photoModal");
@@ -1479,6 +2370,31 @@
     const updatePhotoBtn = document.getElementById("updatePhotoBtn");
     const photoPreview = document.getElementById("photoPreview");
     const profilePhotoInput = document.getElementById("profilePhotoInput");
+    const serviceChips = [...document.querySelectorAll(".service-chip")];
+    const servicePanels = [...document.querySelectorAll("#tab-servicios .service-panel")];
+    const calcRows = document.getElementById("calcRows");
+    const calcAddRow = document.getElementById("calcAddRow");
+    const calcGrandTotal = document.getElementById("calcGrandTotal");
+    const scannerCodeInput = document.getElementById("scannerCodeInput");
+    const scannerRun = document.getElementById("scannerRun");
+    const scannerResult = document.getElementById("scannerResult");
+    const scannerModal = document.getElementById("scannerModal");
+    const scannerViewport = document.getElementById("scannerViewport");
+    const closeScannerBtn = document.getElementById("closeScannerBtn");
+    const citySelect = document.getElementById("citySelect");
+    const storesMap = document.getElementById("storesMap");
+    const storesLoading = document.getElementById("storesLoading");
+    const storesList = document.getElementById("storesList");
+    const snakeCanvas = document.getElementById("snakeCanvas");
+    const snakeScore = document.getElementById("snakeScore");
+    const snakeHistory = document.getElementById("snakeHistory");
+    const snakeStart = document.getElementById("snakeStart");
+    const snakeReset = document.getElementById("snakeReset");
+    const snakePadButtons = [...document.querySelectorAll("[data-snake-dir]")];
+    let storesMapInstance;
+    let storesMarkers = [];
+    let storesLoadingTimer;
+    let snakeScores = JSON.parse(localStorage.getItem("trebolSnakeScores") || "[]");
     let keyCreated = false;
     let dataUpdated = false;
     let loggedIn = false;
@@ -1489,6 +2405,114 @@
       points: "12.840",
       photo: "https://backend.v6card.com/images/1745259881988.jpg"
     };
+
+    const scannerCatalog = {
+      "7801000000012": { name: "Azucar Trebol 1 Kg", price: 799, promo: "Precio junta" },
+      "7801000000029": { name: "Cafe Tradicion 150 gr", price: 5490, promo: "10% con tarjeta" },
+      "7801000000036": { name: "Pack 5 Fideos + Pomarola", price: 4390, promo: "Combo ahorro" },
+      "7801000000043": { name: "Hamburguesa Premium 100 gr", price: 595, promo: "2x $1.190" }
+    };
+
+    const storesByCity = {
+      Temuco: [
+        {
+          name: "Trebol Centro",
+          address: "Av. Alemania 0450",
+          hours: "Lun-Dom 08:00 a 21:30",
+          map: "https://maps.google.com/?q=Av.+Alemania+450+Temuco",
+          lat: -38.7348,
+          lng: -72.5911
+        },
+        {
+          name: "Trebol Prieto Norte",
+          address: "Prieto Norte 212",
+          hours: "Lun-Dom 08:30 a 21:00",
+          map: "https://maps.google.com/?q=Prieto+Norte+212+Temuco",
+          lat: -38.7283,
+          lng: -72.6022
+        },
+        {
+          name: "Trebol Portal Temuco",
+          address: "Av. Pablo Neruda 02080",
+          hours: "Lun-Dom 09:00 a 21:00",
+          map: "https://maps.google.com/?q=Av.+Pablo+Neruda+2080+Temuco",
+          lat: -38.7459,
+          lng: -72.6265
+        },
+        {
+          name: "Trebol Estadio",
+          address: "Av. Caupolican 1350",
+          hours: "Lun-Dom 08:00 a 21:30",
+          map: "https://maps.google.com/?q=Av.+Caupolican+1350+Temuco",
+          lat: -38.7422,
+          lng: -72.5996
+        },
+        {
+          name: "Trebol Labranza",
+          address: "Av. Balmaceda 3190",
+          hours: "Lun-Sab 08:30 a 21:00",
+          map: "https://maps.google.com/?q=Av.+Balmaceda+3190+Temuco",
+          lat: -38.7757,
+          lng: -72.6662
+        },
+        {
+          name: "Trebol Amanecer",
+          address: "Av. Javiera Carrera 1980",
+          hours: "Lun-Dom 08:30 a 21:00",
+          map: "https://maps.google.com/?q=Av.+Javiera+Carrera+1980+Temuco",
+          lat: -38.7564,
+          lng: -72.6207
+        },
+        {
+          name: "Trebol Padre Hurtado",
+          address: "Av. Padre Hurtado 1645",
+          hours: "Lun-Dom 09:00 a 21:00",
+          map: "https://maps.google.com/?q=Av.+Padre+Hurtado+1645+Temuco",
+          lat: -38.7385,
+          lng: -72.5666
+        },
+        {
+          name: "Trebol Pueblo Nuevo",
+          address: "Av. Costanera 910",
+          hours: "Lun-Dom 08:30 a 20:30",
+          map: "https://maps.google.com/?q=Av.+Costanera+910+Temuco",
+          lat: -38.7214,
+          lng: -72.5864
+        },
+        {
+          name: "Trebol San Martin",
+          address: "San Martin 0660",
+          hours: "Lun-Dom 08:00 a 21:30",
+          map: "https://maps.google.com/?q=San+Martin+660+Temuco",
+          lat: -38.7369,
+          lng: -72.6058
+        },
+        {
+          name: "Trebol Alemania Oriente",
+          address: "Av. Alemania 3210",
+          hours: "Lun-Dom 09:00 a 21:00",
+          map: "https://maps.google.com/?q=Av.+Alemania+3210+Temuco",
+          lat: -38.7442,
+          lng: -72.5621
+        }
+      ]
+    };
+
+    const snake = {
+      cols: 15,
+      rows: 11,
+      cell: 20,
+      body: [{ x: 7, y: 5 }],
+      dir: { x: 1, y: 0 },
+      nextDir: { x: 1, y: 0 },
+      food: { x: 10, y: 5 },
+      score: 0,
+      timer: null,
+      running: false
+    };
+
+    const snakeFoodImage = new Image();
+    snakeFoodImage.src = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIACAAIAMBIgACEQEDEQH/xAAZAAEAAgMAAAAAAAAAAAAAAAAGBQcBAwT/xAAnEAABBAECBQQDAAAAAAAAAAABAgMEERIABRQhMVFhBxNBkQYi0f/EABcBAQEBAQAAAAAAAAAAAAAAAAQCBQD/xAAeEQABBQACAwAAAAAAAAAAAAABAAIDBBETIRJhgf/aAAwDAQACEQMRAD8AvHWMhdWL7a1ypCIrKnXLofA6k6Ku+4pZfzKyTeYPMfzRp7IiwZq5d+8fmG07TN4SQt1bwrMNIyCL76mokpiZHbkRnA404kKSofIOqg3+Jl+RSXZBPsqAkOKHXEgWB5Kv1HnS70xeVIZ3N1QAKnUUkdEjGgB4A5atknkVlwXZH2TE8dac+JduEXi4xayxN2k+dA52/wC37dIW1xCnnWyUnh02Ae1mh9XqxFDJJTdWKsaFx/TqAy8hzjX14GwlSUkE/F6iau2RwdnaVZNjAIAPeqC3rc4cyKgrjNsvoUlDpcyWlJpSkBQTXdV8jR5UeukPpuJAizuIS2E+4nAtJSEEV8Y8jrCfT6IG30L3CUsPEFRUE3kDd336/ekWybPE2SCIkIKxyyUpZtS1dzq2MIKLXrz8/LIv/9k=";
 
     function renderMemberData() {
       profileName.textContent = memberData.name;
@@ -1591,6 +2615,12 @@
         return;
       }
 
+      if (!keyTermsCheckbox.checked) {
+        keyFeedback.className = "feedback error";
+        keyFeedback.textContent = "Debes aceptar terminos y uso de datos personales.";
+        return;
+      }
+
       keyCreated = true;
       loggedIn = true;
       keyFeedback.className = "feedback ok";
@@ -1656,6 +2686,12 @@
         return;
       }
 
+      if (!registerTermsCheckbox.checked) {
+        registerFeedback.className = "feedback error";
+        registerFeedback.textContent = "Debes aceptar terminos y uso de datos personales.";
+        return;
+      }
+
       memberData.name = name;
       memberData.rut = rutInput.value.trim() || memberData.rut;
       memberData.email = email;
@@ -1674,13 +2710,52 @@
     const offersTrack = document.getElementById("offersTrack");
     const offerPrev = document.getElementById("offerPrev");
     const offerNext = document.getElementById("offerNext");
+    let currentProfilePane = "tab-perfil";
+
+    function activateTabPane(targetId, activeMainTab = "perfil") {
+      tabs.forEach((t) => t.classList.toggle("active", t.dataset.tab === activeMainTab));
+      panes.forEach((pane) => pane.classList.toggle("active", pane.id === targetId));
+      profileShortcuts.classList.toggle("hide", activeMainTab !== "perfil");
+      if (activeMainTab === "locales") {
+        showStoresLoading();
+        setTimeout(() => {
+          if (!citySelect.value) citySelect.value = "Temuco";
+          renderStores(citySelect.value);
+          if (storesMapInstance) {
+            storesMapInstance.invalidateSize();
+            syncStoresMapViewport();
+          }
+        }, 80);
+      }
+    }
+
+    function showStoresLoading(duration = 520) {
+      storesLoading.classList.remove("hide");
+      clearTimeout(storesLoadingTimer);
+      storesLoadingTimer = setTimeout(() => {
+        storesLoading.classList.add("hide");
+      }, duration);
+    }
+
     tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
-        tabs.forEach((t) => t.classList.remove("active"));
-        tab.classList.add("active");
-        const target = `tab-${tab.dataset.tab}`;
-        panes.forEach((pane) => pane.classList.toggle("active", pane.id === target));
+        if (tab.dataset.tab === "perfil") {
+          currentProfilePane = "tab-perfil";
+          activateTabPane(currentProfilePane, "perfil");
+          return;
+        }
+        activateTabPane(`tab-${tab.dataset.tab}`, tab.dataset.tab);
       });
+    });
+
+    profileComprasBtn.addEventListener("click", () => {
+      currentProfilePane = "tab-compras";
+      activateTabPane("tab-compras", "perfil");
+    });
+
+    profileOfertasBtn.addEventListener("click", () => {
+      currentProfilePane = "tab-ofertas";
+      activateTabPane("tab-ofertas", "perfil");
     });
 
     function slideOffers(direction) {
@@ -1693,6 +2768,405 @@
       offerPrev.addEventListener("click", () => slideOffers(-1));
       offerNext.addEventListener("click", () => slideOffers(1));
     }
+
+    function money(value) {
+      return `$${Math.round(value).toLocaleString("es-CL")}`;
+    }
+
+    function openService(id) {
+      serviceChips.forEach((chip) => chip.classList.toggle("active", chip.dataset.service === id));
+      servicePanels.forEach((panel) => panel.classList.toggle("active", panel.id === `service-${id}`));
+      if (id === "stores" && storesMapInstance) {
+        setTimeout(() => {
+          storesMapInstance.invalidateSize();
+          syncStoresMapViewport();
+        }, 120);
+      }
+    }
+
+    function syncStoresMapViewport() {
+      if (!window.L || !storesMapInstance || !storesMarkers.length) return;
+      const group = L.featureGroup(storesMarkers);
+      storesMapInstance.fitBounds(group.getBounds().pad(0.15));
+    }
+
+    function addCalcRow(values = { item: "", price: "", qty: "1" }) {
+      const row = document.createElement("div");
+      row.className = "calc-row";
+      row.innerHTML = `
+        <div class="calc-row-grid">
+          <input class="input" type="text" placeholder="Producto" value="${values.item}">
+          <input class="input" type="number" min="0" step="1" placeholder="Precio" value="${values.price}">
+          <input class="input" type="number" min="1" step="1" placeholder="Cant" value="${values.qty}">
+        </div>
+        <div class="calc-row-foot">
+          <span>Subtotal: <strong>$0</strong></span>
+          <button type="button">Quitar</button>
+        </div>
+      `;
+      const [itemInput, priceInput, qtyInput] = row.querySelectorAll("input");
+      const subtotalEl = row.querySelector("strong");
+      const removeBtn = row.querySelector("button");
+
+      function updateRowSubtotal() {
+        const price = Number(priceInput.value) || 0;
+        const qty = Number(qtyInput.value) || 0;
+        subtotalEl.textContent = money(price * qty);
+        updateCalcTotal();
+      }
+
+      [itemInput, priceInput, qtyInput].forEach((input) => {
+        input.addEventListener("input", updateRowSubtotal);
+      });
+
+      removeBtn.addEventListener("click", () => {
+        row.remove();
+        updateCalcTotal();
+      });
+
+      calcRows.appendChild(row);
+      updateRowSubtotal();
+    }
+
+    function updateCalcTotal() {
+      const rows = [...calcRows.querySelectorAll(".calc-row")];
+      const total = rows.reduce((sum, row) => {
+        const inputs = row.querySelectorAll("input");
+        const price = Number(inputs[1].value) || 0;
+        const qty = Number(inputs[2].value) || 0;
+        return sum + price * qty;
+      }, 0);
+      calcGrandTotal.textContent = money(total);
+    }
+
+    function runScannerDemo() {
+      scannerModal.classList.remove("hide");
+    }
+
+    function applyScannedProduct(code) {
+      const product = scannerCatalog[code];
+      if (!product) {
+        scannerResult.innerHTML = `Codigo <strong>${code}</strong> no encontrado en la demo.`;
+        return;
+      }
+      scannerCodeInput.value = code;
+      scannerResult.innerHTML = `
+        <strong>${product.name}</strong><br>
+        Precio: <strong>${money(product.price)}</strong><br>
+        Beneficio: <strong>${product.promo}</strong>
+      `;
+    }
+
+    function renderStores(city) {
+      const stores = storesByCity[city] || [];
+      storesList.innerHTML = "";
+      if (window.L) {
+        if (!storesMapInstance) {
+          storesMapInstance = L.map(storesMap, { zoomControl: false }).setView([-38.7359, -72.5904], 13);
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap"
+          }).addTo(storesMapInstance);
+          L.control.zoom({ position: "bottomright" }).addTo(storesMapInstance);
+        }
+        storesMarkers.forEach((marker) => marker.remove());
+        storesMarkers = [];
+      }
+
+      stores.forEach((store, index) => {
+        const item = document.createElement("article");
+        item.className = "store-card";
+        item.dataset.storeId = String(index);
+        item.innerHTML = `
+          <strong>${index + 1}. ${store.name}</strong>
+          <span>${store.address} • ${store.hours}</span>
+          <a href="${store.map}" target="_blank" rel="noopener noreferrer">Abrir mapa</a>
+        `;
+        item.addEventListener("click", () => {
+          storesList.querySelectorAll(".store-card").forEach((card) => card.classList.remove("active"));
+          item.classList.add("active");
+          if (!window.L || !storesMapInstance || !storesMarkers[index]) return;
+          storesMapInstance.setView([store.lat, store.lng], 15, { animate: true });
+          storesMarkers[index].openPopup();
+        });
+        storesList.appendChild(item);
+
+        if (window.L && storesMapInstance) {
+          const marker = L.marker([store.lat, store.lng]).addTo(storesMapInstance);
+          marker.bindPopup(`<strong>${store.name}</strong><br>${store.address}`);
+          marker.on("click", () => {
+            storesList.querySelectorAll(".store-card").forEach((card) => card.classList.remove("active"));
+            item.classList.add("active");
+            item.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          });
+          storesMarkers.push(marker);
+        }
+      });
+
+      const first = storesList.querySelector(".store-card");
+      if (first) first.classList.add("active");
+      if (window.L && storesMapInstance && storesMarkers.length) {
+        const storesVisible = document.getElementById("tab-locales")?.classList.contains("active");
+        if (storesVisible) {
+          setTimeout(() => {
+            storesMapInstance.invalidateSize();
+            syncStoresMapViewport();
+          }, 80);
+        }
+      }
+    }
+
+    function renderSnakeHistory() {
+      if (!snakeScores.length) {
+        snakeHistory.textContent = "Sin partidas aun.";
+        return;
+      }
+      snakeHistory.textContent = snakeScores.map((value) => `${value} pts`).join(" • ");
+    }
+
+    function saveSnakeScore() {
+      if (snake.score <= 0) return;
+      snakeScores.unshift(snake.score);
+      snakeScores = snakeScores.slice(0, 6);
+      localStorage.setItem("trebolSnakeScores", JSON.stringify(snakeScores));
+      renderSnakeHistory();
+    }
+
+    function randomCell() {
+      return {
+        x: Math.floor(Math.random() * snake.cols),
+        y: Math.floor(Math.random() * snake.rows)
+      };
+    }
+
+    function drawTrebolFood(ctx, x, y, size) {
+      if (snakeFoodImage.complete) {
+        const iconSize = Math.floor(size * 0.7);
+        const offset = Math.floor((size - iconSize) / 2);
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(x + size / 2, y + size / 2, iconSize / 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(snakeFoodImage, x + offset, y + offset, iconSize, iconSize);
+        ctx.restore();
+        ctx.strokeStyle = "#1d7f39";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(x + size / 2, y + size / 2, iconSize / 2, 0, Math.PI * 2);
+        ctx.stroke();
+        return;
+      }
+      ctx.fillStyle = "#2f8e45";
+      ctx.beginPath();
+      ctx.arc(x + size / 2, y + size / 2, size * 0.32, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawSnake() {
+      const ctx = snakeCanvas.getContext("2d");
+      ctx.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+      ctx.fillStyle = "#f7fcf5";
+      ctx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+
+      ctx.strokeStyle = "#e1ecdc";
+      for (let x = 0; x <= snakeCanvas.width; x += snake.cell) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, snakeCanvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= snakeCanvas.height; y += snake.cell) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(snakeCanvas.width, y);
+        ctx.stroke();
+      }
+
+      const centers = snake.body.map((part) => ({
+        x: part.x * snake.cell + snake.cell / 2,
+        y: part.y * snake.cell + snake.cell / 2
+      }));
+
+      if (centers.length > 1) {
+        ctx.beginPath();
+        ctx.moveTo(centers[0].x, centers[0].y);
+        for (let i = 1; i < centers.length; i += 1) {
+          ctx.lineTo(centers[i].x, centers[i].y);
+        }
+        ctx.strokeStyle = "#34a14e";
+        ctx.lineWidth = snake.cell * 0.72;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.stroke();
+      }
+
+      const head = centers[0];
+      ctx.fillStyle = "#117e36";
+      ctx.beginPath();
+      ctx.arc(head.x, head.y, snake.cell * 0.36, 0, Math.PI * 2);
+      ctx.fill();
+
+      const eyeOffsetX = snake.dir.x === 0 ? snake.cell * 0.12 : snake.dir.x * snake.cell * 0.12;
+      const eyeOffsetY = snake.dir.y === 0 ? snake.cell * 0.12 : snake.dir.y * snake.cell * 0.12;
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(head.x + eyeOffsetX - 2, head.y + eyeOffsetY - 2, 1.6, 0, Math.PI * 2);
+      ctx.arc(head.x + eyeOffsetX + 2, head.y + eyeOffsetY + 2, 1.6, 0, Math.PI * 2);
+      ctx.fill();
+
+      const tail = centers[centers.length - 1];
+      ctx.fillStyle = "#2d9247";
+      ctx.beginPath();
+      ctx.arc(tail.x, tail.y, snake.cell * 0.26, 0, Math.PI * 2);
+      ctx.fill();
+
+      drawTrebolFood(ctx, snake.food.x * snake.cell, snake.food.y * snake.cell, snake.cell);
+      snakeScore.textContent = snake.score;
+    }
+
+    function resetSnake() {
+      snake.body = [{ x: 7, y: 5 }];
+      snake.dir = { x: 1, y: 0 };
+      snake.nextDir = { x: 1, y: 0 };
+      snake.food = randomCell();
+      snake.score = 0;
+      snakePadButtons.forEach((button) => button.classList.toggle("active", button.dataset.snakeDir === "right"));
+      drawSnake();
+    }
+
+    function stopSnake() {
+      snake.running = false;
+      clearInterval(snake.timer);
+      snake.timer = null;
+    }
+
+    function startSnake() {
+      if (snake.running) {
+        stopSnake();
+        return;
+      }
+      snake.running = true;
+      snake.timer = setInterval(() => {
+        snake.dir = { ...snake.nextDir };
+        const head = snake.body[0];
+        const next = { x: head.x + snake.dir.x, y: head.y + snake.dir.y };
+
+        if (next.x < 0 || next.y < 0 || next.x >= snake.cols || next.y >= snake.rows) {
+          saveSnakeScore();
+          resetSnake();
+          stopSnake();
+          return;
+        }
+
+        if (snake.body.some((part) => part.x === next.x && part.y === next.y)) {
+          saveSnakeScore();
+          resetSnake();
+          stopSnake();
+          return;
+        }
+
+        snake.body.unshift(next);
+
+        if (next.x === snake.food.x && next.y === snake.food.y) {
+          snake.score += 10;
+          let freshFood = randomCell();
+          while (snake.body.some((part) => part.x === freshFood.x && part.y === freshFood.y)) {
+            freshFood = randomCell();
+          }
+          snake.food = freshFood;
+        } else {
+          snake.body.pop();
+        }
+
+        drawSnake();
+      }, 140);
+    }
+
+    function setSnakeDirection(dir) {
+      const map = {
+        up: { x: 0, y: -1 },
+        down: { x: 0, y: 1 },
+        left: { x: -1, y: 0 },
+        right: { x: 1, y: 0 }
+      };
+      const candidate = map[dir];
+      if (!candidate) return;
+      if (candidate.x === -snake.dir.x && candidate.y === -snake.dir.y) return;
+      snake.nextDir = candidate;
+      snakePadButtons.forEach((button) => button.classList.toggle("active", button.dataset.snakeDir === dir));
+    }
+
+    serviceChips.forEach((chip) => {
+      chip.addEventListener("click", () => openService(chip.dataset.service));
+    });
+
+    calcAddRow.addEventListener("click", () => {
+      addCalcRow();
+    });
+
+    scannerRun.addEventListener("click", runScannerDemo);
+
+    scannerViewport.addEventListener("click", () => {
+      const codes = Object.keys(scannerCatalog);
+      const randomCode = codes[Math.floor(Math.random() * codes.length)];
+      applyScannedProduct(randomCode);
+      scannerModal.classList.add("hide");
+    });
+
+    closeScannerBtn.addEventListener("click", () => {
+      scannerModal.classList.add("hide");
+    });
+
+    scannerModal.addEventListener("click", (event) => {
+      if (event.target === scannerModal) {
+        scannerModal.classList.add("hide");
+      }
+    });
+
+    Object.keys(storesByCity).forEach((city) => {
+      const option = document.createElement("option");
+      option.value = city;
+      option.textContent = city;
+      citySelect.appendChild(option);
+    });
+
+    citySelect.addEventListener("change", () => {
+      showStoresLoading();
+      renderStores(citySelect.value);
+      if (storesMapInstance) {
+        storesMapInstance.invalidateSize();
+        syncStoresMapViewport();
+      }
+    });
+
+    snakeStart.addEventListener("click", startSnake);
+    snakeReset.addEventListener("click", () => {
+      saveSnakeScore();
+      resetSnake();
+      stopSnake();
+    });
+    snakePadButtons.forEach((button) => {
+      button.addEventListener("click", () => setSnakeDirection(button.dataset.snakeDir));
+    });
+
+    keyTermsLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      keyTermsText.classList.toggle("hide");
+    });
+
+    registerTermsLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      registerTermsText.classList.toggle("hide");
+    });
+
+    openBenefitsBtn.addEventListener("click", () => {
+      setScreen("benefits");
+    });
+
+    backToProfileBtn.addEventListener("click", () => {
+      setScreen("profile");
+    });
 
     editPhotoBtn.addEventListener("click", () => {
       if (!loggedIn) return;
@@ -1731,8 +3205,24 @@
       }
     });
 
+    addCalcRow({ item: "Azucar Trebol 1 Kg", price: "799", qty: "2" });
+    addCalcRow({ item: "Cafe Tradicion", price: "5490", qty: "1" });
+    citySelect.value = "Temuco";
+    showStoresLoading(450);
+    renderStores("Temuco");
+    resetSnake();
+    renderSnakeHistory();
+    openService("scanner");
+
     renderMemberData();
-    setScreen("totem");
+    if (mobileMode) {
+      document.body.classList.add("mobile-mode");
+      loggedIn = true;
+      const targetMobileView = mobileView === "benefits" ? "benefits" : "profile";
+      setScreen(targetMobileView);
+    } else {
+      setScreen("totem");
+    }
   </script>
 </body>
 </html>
