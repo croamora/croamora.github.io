@@ -746,8 +746,8 @@
     .snake-joystick {
       margin-top: 10px;
       position: relative;
-      width: 248px;
-      height: 248px;
+      width: min(100%, 320px);
+      aspect-ratio: 1 / 1;
       margin-left: auto;
       margin-right: auto;
       border-radius: 50%;
@@ -757,8 +757,8 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       grid-template-rows: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      padding: 18px;
+      gap: 14px;
+      padding: 16px;
     }
 
     .snake-joystick::before {
@@ -772,7 +772,7 @@
     .joy-btn {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
+      border-radius: 18px;
       border: 1px solid #b9d4b1;
       background: linear-gradient(145deg, #f8fdf6, #e5f2de);
       color: #1f6a30;
@@ -782,16 +782,18 @@
       font-weight: 800;
       cursor: pointer;
       box-shadow: 0 5px 10px rgba(19, 88, 35, .12);
-      min-height: 62px;
+      min-height: 74px;
+      touch-action: manipulation;
+      z-index: 2;
     }
 
     .joy-btn span {
-      font-size: 1rem;
+      font-size: 1.2rem;
       line-height: 1;
     }
 
     .joy-btn small {
-      font-size: .62rem;
+      font-size: .72rem;
       line-height: 1;
     }
 
@@ -815,7 +817,7 @@
       grid-row: 2;
       width: 100%;
       height: 100%;
-      border-radius: 50%;
+      border-radius: 18px;
       border: 1px solid #b8d4b0;
       background: linear-gradient(145deg, #e8f4e3, #d9ecd2);
       color: #32683b;
@@ -824,6 +826,24 @@
       display: grid;
       place-items: center;
       user-select: none;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @media (max-width: 420px) {
+      .snake-joystick {
+        width: min(100%, 336px);
+        gap: 10px;
+        padding: 12px;
+      }
+
+      .joy-btn {
+        min-height: 78px;
+      }
+
+      .joy-btn small {
+        font-size: .69rem;
+      }
     }
 
     .snake-history {
@@ -2089,8 +2109,8 @@
                         </div>
                         <div class="snake-joystick" aria-label="Joystick tactil del juego">
                           <button class="joy-btn up" type="button" data-snake-dir="up" aria-label="Mover arriba"><span>&uarr;</span><small>Arriba</small></button>
-                          <button class="joy-btn left" type="button" data-snake-dir="left" aria-label="Mover izquierda"><span>&larr;</span><small>Izquierda</small></button>
-                          <button class="joy-btn right" type="button" data-snake-dir="right" aria-label="Mover derecha"><span>&rarr;</span><small>Derecha</small></button>
+                          <button class="joy-btn left" type="button" data-snake-dir="left" aria-label="Mover izquierda"><span>&larr;</span><small>Izq</small></button>
+                          <button class="joy-btn right" type="button" data-snake-dir="right" aria-label="Mover derecha"><span>&rarr;</span><small>Der</small></button>
                           <button class="joy-btn down" type="button" data-snake-dir="down" aria-label="Mover abajo"><span>&darr;</span><small>Abajo</small></button>
                           <div class="joy-core" aria-hidden="true">Joy</div>
                         </div>
