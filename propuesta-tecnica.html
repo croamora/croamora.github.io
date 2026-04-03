@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propuesta Tecnica - Cliente Vecino Trebol</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap");
+
+    :root {
+      --bg: #f3f7fb;
+      --card: #ffffff;
+      --line: #d7e2ec;
+      --ink: #1a3043;
+      --muted: #5f7284;
+      --primary: #1768ac;
+      --accent: #1d8d3f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 0% 0%, #e9f3ff 0%, var(--bg) 44%);
+      color: var(--ink);
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 18px 36px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .top {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(130deg, #ffffff 0%, #f2f8ff 100%);
+      padding: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .top h1 {
+      margin: 0;
+      font-size: clamp(1.2rem, 2vw, 1.6rem);
+      color: #123a5d;
+    }
+
+    .top p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: .92rem;
+      max-width: 78ch;
+    }
+
+    .stack {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--card);
+      padding: 10px;
+      display: grid;
+      gap: 3px;
+    }
+
+    .pill span {
+      font-size: .68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .35px;
+      font-weight: 700;
+    }
+
+    .pill strong {
+      font-size: .84rem;
+      color: var(--ink);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr .95fr;
+      gap: 14px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+      padding: 14px;
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      color: #1a486d;
+    }
+
+    .diagram {
+      display: grid;
+      gap: 8px;
+    }
+
+    .node {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f8fcff;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .node strong {
+      display: block;
+      font-size: .86rem;
+      margin-bottom: 3px;
+      color: #17456b;
+    }
+
+    .node span {
+      font-size: .76rem;
+      color: var(--muted);
+    }
+
+    .flow {
+      text-align: center;
+      font-size: .74rem;
+      color: #5b7390;
+      font-weight: 800;
+    }
+
+    .code {
+      margin-top: 10px;
+      border-radius: 12px;
+      border: 1px solid #233244;
+      background: #0e1926;
+      color: #d8ebff;
+      padding: 11px;
+      font-family: "Courier New", monospace;
+      font-size: .74rem;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.35;
+    }
+
+    ul { margin: 0; padding-left: 18px; display: grid; gap: 7px; }
+    li { font-size: .82rem; color: #445a6f; line-height: 1.35; }
+
+    .ok {
+      border: 1px solid #cbe5cf;
+      background: #f1faf3;
+      border-radius: 10px;
+      padding: 9px 10px;
+      color: #1d6232;
+      font-size: .8rem;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    .links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .links a {
+      text-decoration: none;
+      border: 1px solid #b8cfe1;
+      border-radius: 999px;
+      background: #eef6fd;
+      color: #175f99;
+      padding: 8px 12px;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 920px) {
+      .stack { grid-template-columns: 1fr 1fr; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="top">
+      <h1>Propuesta Tecnica - Cliente Vecino Trebol</h1>
+      <p>
+        Esta propuesta separa claramente responsabilidades: el backend propio mantiene clientes y credenciales,
+        y consulta al sistema externo por RUT para traer puntos, compras y ofertas. El frontend recibe un resumen
+        unificado en una sola respuesta.
+      </p>
+      <div class="stack">
+        <article class="pill"><span>Backend</span><strong>Java 21 + Spring Boot WebFlux</strong></article>
+        <article class="pill"><span>Frontend</span><strong>Angular 21 (estable)</strong></article>
+        <article class="pill"><span>Datos locales</span><strong>PostgreSQL (clientes y auth)</strong></article>
+        <article class="pill"><span>Seguridad</span><strong>JWT Bearer Token</strong></article>
+      </div>
+      <div class="links">
+        <a href="./index.html">Volver a demo</a>
+        <a href="./index.html?mobile=1" target="_blank" rel="noopener noreferrer">Ver tarjeta movil</a>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Estructura de aplicaciones</h2>
+        <div class="diagram">
+          <div class="node"><strong>Angular App</strong><span>consume solo API propia</span></div>
+          <div class="flow">JWT Bearer</div>
+          <div class="node"><strong>API WebFlux</strong><span>orquesta y unifica respuesta</span></div>
+          <div class="flow">Llamadas reactivas en paralelo</div>
+          <div class="node"><strong>PostgreSQL</strong><span>clientes, usuario, clave hash, registro</span></div>
+          <div class="node"><strong>Sistema externo</strong><span>puntos + mis compras + mis ofertas por RUT</span></div>
+          <div class="flow">GET /api/v1/clientes/{rut}/resumen</div>
+        </div>
+        <div class="code">Mono&lt;Cliente&gt; local = clienteService.findByRut(rut);
+Mono&lt;ResumenExterno&gt; externo = externalClient.getResumenByRut(rut);
+
+return Mono.zip(local, externo)
+  .map(tuple -&gt; resumenMapper.unificar(tuple.getT1(), tuple.getT2()))
+  .timeout(Duration.ofSeconds(3));</div>
+        <div class="ok">Se usa programacion reactiva para ejecutar consultas en paralelo y reducir latencia de carga de la vista.</div>
+      </article>
+
+      <article class="card">
+        <h2>Contratos API</h2>
+        <ul>
+          <li><strong>POST /api/v1/auth/login:</strong> valida usuario/clave y entrega token JWT.</li>
+          <li><strong>POST /api/v1/clientes:</strong> registra nuevo cliente en base local.</li>
+          <li><strong>GET /api/v1/clientes/{rut}/resumen:</strong> trae cliente local + datos externos unificados.</li>
+          <li><strong>Seguridad:</strong> contrasenas hasheadas (BCrypt/Argon2), rate limit en login.</li>
+          <li><strong>Resiliencia:</strong> timeout, retry y circuit breaker para el sistema externo.</li>
+          <li><strong>Fallback:</strong> si externo falla, devolver cliente local y estado degradado controlado.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
