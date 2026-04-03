@@ -288,10 +288,172 @@
       font-weight: 700;
     }
 
+    .sim-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfdff;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .sim-stage {
+      position: relative;
+      border: 1px dashed #c7d8e7;
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 188px;
+      background: linear-gradient(180deg, #f8fbff, #f2f8ff);
+      overflow: hidden;
+    }
+
+    .sim-track {
+      display: grid;
+      grid-template-columns: 1fr 56px 1fr 56px 1fr 56px 1fr;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .sim-node {
+      border: 1px solid #d4e2ef;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+      text-align: center;
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+      transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+    }
+
+    .sim-node.active {
+      border-color: #8dc0ea;
+      box-shadow: 0 8px 16px rgba(28, 89, 142, .16);
+      transform: translateY(-2px);
+    }
+
+    .sim-node svg {
+      width: 24px;
+      height: 24px;
+      stroke: #1d6ead;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .sim-node strong {
+      font-size: .78rem;
+      color: #1e476a;
+      line-height: 1.2;
+    }
+
+    .sim-link {
+      text-align: center;
+      color: #5f7892;
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .sim-packet {
+      position: absolute;
+      left: 20px;
+      top: 140px;
+      border: 1px solid #8ec4eb;
+      border-radius: 999px;
+      background: #e8f5ff;
+      color: #125b94;
+      padding: 4px 10px;
+      font-size: .72rem;
+      font-weight: 800;
+      box-shadow: 0 6px 10px rgba(23, 96, 158, .14);
+      transition: left .45s ease, top .45s ease, background .2s ease, color .2s ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .sim-packet.response {
+      border-color: #9cd3a8;
+      background: #ebf9ee;
+      color: #1c7639;
+    }
+
+    .sim-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sim-controls button {
+      border: 1px solid #c7d9e8;
+      background: #f1f7fd;
+      color: #1a639e;
+      border-radius: 999px;
+      font: inherit;
+      font-size: .76rem;
+      font-weight: 700;
+      padding: 7px 11px;
+      cursor: pointer;
+      min-height: 38px;
+    }
+
+    .sim-status {
+      border: 1px solid #d8e4ef;
+      border-radius: 10px;
+      background: #fff;
+      padding: 8px 10px;
+      font-size: .8rem;
+      color: #456076;
+      font-weight: 600;
+    }
+
+    .sim-steps {
+      margin: 0;
+      padding-left: 20px;
+      display: grid;
+      gap: 5px;
+    }
+
+    .sim-steps li {
+      color: #587089;
+      font-size: .78rem;
+      line-height: 1.32;
+    }
+
+    .sim-steps li.active {
+      color: #1b659f;
+      font-weight: 700;
+    }
+
     @media (max-width: 980px) {
       .meta { grid-template-columns: 1fr 1fr; }
       .cols-2,
       .grid-3 { grid-template-columns: 1fr; }
+
+      .sim-stage {
+        min-height: 430px;
+      }
+
+      .sim-track {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+
+      .sim-link {
+        transform: rotate(90deg);
+        font-size: .86rem;
+      }
+
+      .sim-node {
+        justify-items: start;
+        text-align: left;
+        grid-template-columns: 24px 1fr;
+        align-items: center;
+      }
+
+      .sim-node strong {
+        margin-left: 6px;
+      }
     }
   </style>
 </head>
@@ -382,7 +544,60 @@
     </section>
 
     <section class="section">
-      <h2>3. Programacion reactiva y enriquecimiento en paralelo</h2>
+      <h2>3. Diagrama interactivo de solicitud y respuesta</h2>
+      <p>
+        Este diagrama animado muestra el recorrido completo: usuario, frontend, backend, sistema externo y retorno de respuesta.
+        Usa los controles para reproducir la secuencia paso a paso.
+      </p>
+
+      <div class="sim-wrap" id="simWrap">
+        <div class="sim-stage" id="simStage">
+          <div class="sim-track" id="simTrack">
+            <article class="sim-node" id="sim-user">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.2 2.8-5.5 7-5.5s7 2.3 7 5.5"/></svg>
+              <strong>Usuario</strong>
+            </article>
+            <div class="sim-link">→</div>
+            <article class="sim-node" id="sim-front">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M9 19h6"/></svg>
+              <strong>Frontend Angular</strong>
+            </article>
+            <div class="sim-link">→</div>
+            <article class="sim-node" id="sim-back">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg>
+              <strong>Backend WebFlux</strong>
+            </article>
+            <div class="sim-link">→</div>
+            <article class="sim-node" id="sim-ext">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18"/><path d="M12 3c2.5 2 4 5 4 9s-1.5 7-4 9c-2.5-2-4-5-4-9s1.5-7 4-9z"/><circle cx="12" cy="12" r="9"/></svg>
+              <strong>Sistema Externo</strong>
+            </article>
+          </div>
+          <div class="sim-packet" id="simPacket">Solicitud</div>
+        </div>
+
+        <div class="sim-controls">
+          <button type="button" id="simPlayBtn">Reproducir</button>
+          <button type="button" id="simNextBtn">Paso siguiente</button>
+          <button type="button" id="simResetBtn">Reiniciar</button>
+        </div>
+
+        <div class="sim-status" id="simStatus">Paso 1: El usuario solicita ver su resumen de beneficios.</div>
+
+        <ol class="sim-steps" id="simSteps">
+          <li data-step="0" class="active">Usuario inicia la solicitud de resumen.</li>
+          <li data-step="1">Frontend envia request autenticada al backend.</li>
+          <li data-step="2">Backend valida token y contexto de cliente.</li>
+          <li data-step="3">Backend consulta sistema externo por RUT.</li>
+          <li data-step="4">Backend integra datos y construye respuesta unificada.</li>
+          <li data-step="5">Frontend recibe y renderiza puntos, compras y ofertas.</li>
+          <li data-step="6">Usuario visualiza datos actualizados en pantalla.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>4. Programacion reactiva y enriquecimiento en paralelo</h2>
       <p>
         Se propone usar Spring WebFlux y Reactor para ejecutar en paralelo las consultas a la base local y al sistema externo.
         Esto reduce latencia y mantiene el flujo no bloqueante de punta a punta.
@@ -401,7 +616,7 @@ return Mono.zip(localMono, externoMono)
     </section>
 
     <section class="section">
-      <h2>4. Contratos API propuestos</h2>
+      <h2>5. Contratos API propuestos</h2>
       <table class="table">
         <thead>
           <tr>
@@ -438,7 +653,7 @@ return Mono.zip(localMono, externoMono)
     </section>
 
     <section class="section">
-      <h2>5. Seguridad, resiliencia y observabilidad</h2>
+      <h2>6. Seguridad, resiliencia y observabilidad</h2>
       <div class="cols-2">
         <div class="box">
           <h3>Seguridad</h3>
@@ -454,7 +669,7 @@ return Mono.zip(localMono, externoMono)
           <ul>
             <li>Timeout, retry y circuit breaker en integracion externa.</li>
             <li>Fallback degradado (cliente local disponible si externo falla).</li>
-            <li>Cache corta por RUT (30-60 segundos) para reducir latencia.</li>
+            <li>Degradacion controlada en respuesta si el sistema externo no responde.</li>
             <li>Trazabilidad con request-id, logs estructurados y metricas.</li>
           </ul>
         </div>
@@ -462,7 +677,7 @@ return Mono.zip(localMono, externoMono)
     </section>
 
     <section class="section">
-      <h2>6. Plan de implementacion sugerido</h2>
+      <h2>7. Plan de implementacion sugerido</h2>
       <div class="grid-3">
         <div class="box">
           <h3>Fase 1</h3>
@@ -480,5 +695,98 @@ return Mono.zip(localMono, externoMono)
       <div class="ok">Resultado esperado: experiencia rapida para usuario final y arquitectura mantenible para evolucion del producto.</div>
     </section>
   </main>
+
+  <script>
+    const simStage = document.getElementById("simStage");
+    const simPacket = document.getElementById("simPacket");
+    const simPlayBtn = document.getElementById("simPlayBtn");
+    const simNextBtn = document.getElementById("simNextBtn");
+    const simResetBtn = document.getElementById("simResetBtn");
+    const simStatus = document.getElementById("simStatus");
+    const simStepItems = [...document.querySelectorAll("#simSteps li")];
+
+    const simNodes = [
+      document.getElementById("sim-user"),
+      document.getElementById("sim-front"),
+      document.getElementById("sim-back"),
+      document.getElementById("sim-ext"),
+      document.getElementById("sim-back"),
+      document.getElementById("sim-front"),
+      document.getElementById("sim-user")
+    ];
+
+    const simMessages = [
+      "Paso 1: El usuario solicita ver su resumen de beneficios.",
+      "Paso 2: El frontend Angular envia una peticion autenticada al backend.",
+      "Paso 3: El backend valida token y prepara las consultas necesarias.",
+      "Paso 4: Se consulta el sistema externo por RUT para puntos, compras y ofertas.",
+      "Paso 5: El backend integra datos locales y externos en una sola respuesta.",
+      "Paso 6: El frontend recibe el resumen consolidado y actualiza la vista.",
+      "Paso 7: El usuario visualiza informacion completa y actualizada."
+    ];
+
+    let simStep = 0;
+    let simTimer;
+
+    function movePacketTo(node) {
+      const stageRect = simStage.getBoundingClientRect();
+      const nodeRect = node.getBoundingClientRect();
+      const x = nodeRect.left - stageRect.left + (nodeRect.width / 2) - (simPacket.offsetWidth / 2);
+      const y = nodeRect.top - stageRect.top + nodeRect.height + 6;
+      simPacket.style.left = `${Math.max(6, x)}px`;
+      simPacket.style.top = `${Math.max(6, y)}px`;
+    }
+
+    function paintSimulation(step) {
+      simStep = step;
+      const node = simNodes[step];
+      simPacket.classList.toggle("response", step >= 4);
+      simPacket.textContent = step >= 4 ? "Respuesta" : "Solicitud";
+
+      [document.getElementById("sim-user"), document.getElementById("sim-front"), document.getElementById("sim-back"), document.getElementById("sim-ext")]
+        .forEach((n) => n.classList.remove("active"));
+      node.classList.add("active");
+
+      simStepItems.forEach((item, index) => item.classList.toggle("active", index === step));
+      simStatus.textContent = simMessages[step];
+      movePacketTo(node);
+    }
+
+    function nextSimulationStep() {
+      paintSimulation((simStep + 1) % simNodes.length);
+    }
+
+    function togglePlay() {
+      if (simTimer) {
+        clearInterval(simTimer);
+        simTimer = null;
+        simPlayBtn.textContent = "Reproducir";
+        return;
+      }
+      simPlayBtn.textContent = "Pausar";
+      simTimer = setInterval(() => {
+        if (simStep === simNodes.length - 1) {
+          clearInterval(simTimer);
+          simTimer = null;
+          simPlayBtn.textContent = "Reproducir";
+          return;
+        }
+        nextSimulationStep();
+      }, 1100);
+    }
+
+    simPlayBtn.addEventListener("click", togglePlay);
+    simNextBtn.addEventListener("click", () => {
+      if (simTimer) togglePlay();
+      nextSimulationStep();
+    });
+    simResetBtn.addEventListener("click", () => {
+      if (simTimer) togglePlay();
+      paintSimulation(0);
+    });
+
+    window.addEventListener("resize", () => movePacketTo(simNodes[simStep]));
+    paintSimulation(0);
+  </script>
 </body>
 </html>
