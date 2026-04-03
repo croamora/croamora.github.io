@@ -1991,13 +1991,8 @@
 
                   <div class="tabs">
                     <button class="tab active" data-tab="perfil">Perfil</button>
-                    <button class="tab" data-tab="locales">Locales</button>
-                    <button class="tab" data-tab="servicios">Servicios</button>
-                  </div>
-
-                  <div class="profile-shortcuts">
-                    <button id="profileComprasBtn" type="button">Mis compras</button>
-                    <button id="profileOfertasBtn" type="button">Mis ofertas</button>
+                    <button class="tab" data-tab="compras">Mis compras</button>
+                    <button class="tab" data-tab="ofertas">Mis ofertas</button>
                   </div>
 
                   <div class="tab-content">
@@ -2101,73 +2096,6 @@
                           </div>
                         </div>
                       </details>
-                    </section>
-                    <section class="tab-pane" id="tab-servicios">
-                      <div class="services-intro">
-                        Accede rapido a herramientas de tu tarjeta Cliente Vecino.
-                      </div>
-
-                      <div class="services-grid" id="servicesGrid">
-                        <button class="service-chip active" type="button" data-service="scanner">Scanner</button>
-                        <button class="service-chip" type="button" data-service="game">Juego</button>
-                        <button class="service-chip" type="button" data-service="calculator">Calculadora</button>
-                      </div>
-
-                      <div class="service-panel" id="service-game">
-                        <h5>Juego Snake Trebol</h5>
-                        <p>Come logos del Super Trebol para sumar puntos.</p>
-                        <canvas id="snakeCanvas" class="snake-canvas" width="300" height="220" aria-label="Juego Snake Trebol"></canvas>
-                        <div class="snake-meta">
-                          <span>Puntaje</span>
-                          <strong id="snakeScore">0</strong>
-                        </div>
-                        <div class="snake-controls">
-                          <button class="btn-soft" id="snakeStart" type="button">Iniciar / Pausar</button>
-                          <button class="btn-soft" id="snakeReset" type="button">Reiniciar</button>
-                        </div>
-                        <div class="snake-joystick" aria-label="Joystick tactil del juego">
-                          <button class="joy-btn joy-up" type="button" data-snake-dir="up" aria-label="Mover arriba"><span>&uarr;</span></button>
-                          <button class="joy-btn joy-left" type="button" data-snake-dir="left" aria-label="Mover izquierda"><span>&larr;</span></button>
-                          <button class="joy-btn joy-right" type="button" data-snake-dir="right" aria-label="Mover derecha"><span>&rarr;</span></button>
-                          <button class="joy-btn joy-down" type="button" data-snake-dir="down" aria-label="Mover abajo"><span>&darr;</span></button>
-                        </div>
-                        <div class="snake-history">
-                          <span>Ultimos puntajes</span>
-                          <div id="snakeHistory">Sin partidas aun.</div>
-                        </div>
-                      </div>
-
-                      <div class="service-panel" id="service-calculator">
-                        <h5>Calculadora de compras</h5>
-                        <p>Arma un calculo rapido de tu carro antes de pagar.</p>
-                        <div id="calcRows" class="calc-rows"></div>
-                        <button class="btn-soft" id="calcAddRow" type="button">Agregar producto</button>
-                        <div class="calc-total"><span>Total estimado</span><strong id="calcGrandTotal">$0</strong></div>
-                      </div>
-
-                      <div class="service-panel active" id="service-scanner">
-                        <h5>Scanner de precios (demo)</h5>
-                        <p>Abre la camara demo y toca la pantalla para leer un producto.</p>
-                        <label for="scannerCodeInput" class="service-label">Codigo del producto</label>
-                        <input id="scannerCodeInput" class="input" type="text" placeholder="Ej: 7801000000012">
-                        <button class="btn-soft" id="scannerRun" type="button">Abrir camara demo</button>
-                        <div id="scannerResult" class="scanner-result">Aun no hay lecturas.</div>
-                      </div>
-
-                    </section>
-
-                    <section class="tab-pane" id="tab-locales">
-                      <div class="service-panel active">
-                        <h5>Mapa de locales por ciudad</h5>
-                        <p>Revisa direcciones y abre la ruta en Google Maps.</p>
-                        <label for="citySelect" class="service-label">Ciudad</label>
-                        <select id="citySelect" class="input"></select>
-                        <div class="stores-map-wrap">
-                          <div id="storesMap" class="stores-map" aria-label="Mapa de locales"></div>
-                          <div id="storesLoading" class="map-loading hide">Cargando mapa...</div>
-                        </div>
-                        <div id="storesList" class="stores-list"></div>
-                      </div>
                     </section>
                   </div>
 
@@ -2396,9 +2324,6 @@
     const registerFeedback = document.getElementById("registerFeedback");
     const openBenefitsBtn = document.getElementById("openBenefitsBtn");
     const backToProfileBtn = document.getElementById("backToProfileBtn");
-    const profileShortcuts = document.querySelector(".profile-shortcuts");
-    const profileComprasBtn = document.getElementById("profileComprasBtn");
-    const profileOfertasBtn = document.getElementById("profileOfertasBtn");
     const profileImage = document.getElementById("profileImage");
     const editPhotoBtn = document.getElementById("editPhotoBtn");
     const photoModal = document.getElementById("photoModal");
@@ -2747,52 +2672,14 @@
     const offersTrack = document.getElementById("offersTrack");
     const offerPrev = document.getElementById("offerPrev");
     const offerNext = document.getElementById("offerNext");
-    let currentProfilePane = "tab-perfil";
-
-    function activateTabPane(targetId, activeMainTab = "perfil") {
-      tabs.forEach((t) => t.classList.toggle("active", t.dataset.tab === activeMainTab));
-      panes.forEach((pane) => pane.classList.toggle("active", pane.id === targetId));
-      profileShortcuts.classList.toggle("hide", activeMainTab !== "perfil");
-      if (activeMainTab === "locales") {
-        showStoresLoading();
-        setTimeout(() => {
-          if (!citySelect.value) citySelect.value = "Temuco";
-          renderStores(citySelect.value);
-          if (storesMapInstance) {
-            storesMapInstance.invalidateSize();
-            syncStoresMapViewport();
-          }
-        }, 80);
-      }
-    }
-
-    function showStoresLoading(duration = 520) {
-      storesLoading.classList.remove("hide");
-      clearTimeout(storesLoadingTimer);
-      storesLoadingTimer = setTimeout(() => {
-        storesLoading.classList.add("hide");
-      }, duration);
-    }
 
     tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
-        if (tab.dataset.tab === "perfil") {
-          currentProfilePane = "tab-perfil";
-          activateTabPane(currentProfilePane, "perfil");
-          return;
-        }
-        activateTabPane(`tab-${tab.dataset.tab}`, tab.dataset.tab);
+        tabs.forEach((t) => t.classList.remove("active"));
+        tab.classList.add("active");
+        const target = `tab-${tab.dataset.tab}`;
+        panes.forEach((pane) => pane.classList.toggle("active", pane.id === target));
       });
-    });
-
-    profileComprasBtn.addEventListener("click", () => {
-      currentProfilePane = "tab-compras";
-      activateTabPane("tab-compras", "perfil");
-    });
-
-    profileOfertasBtn.addEventListener("click", () => {
-      currentProfilePane = "tab-ofertas";
-      activateTabPane("tab-ofertas", "perfil");
     });
 
     function slideOffers(direction) {
@@ -3138,54 +3025,63 @@
       chip.addEventListener("click", () => openService(chip.dataset.service));
     });
 
-    calcAddRow.addEventListener("click", () => {
-      addCalcRow();
-    });
+    if (calcAddRow && calcRows) {
+      calcAddRow.addEventListener("click", () => {
+        addCalcRow();
+      });
+    }
 
-    scannerRun.addEventListener("click", runScannerDemo);
+    if (scannerRun && scannerModal && scannerViewport && closeScannerBtn) {
+      scannerRun.addEventListener("click", runScannerDemo);
 
-    scannerViewport.addEventListener("click", () => {
-      const codes = Object.keys(scannerCatalog);
-      const randomCode = codes[Math.floor(Math.random() * codes.length)];
-      applyScannedProduct(randomCode);
-      scannerModal.classList.add("hide");
-    });
-
-    closeScannerBtn.addEventListener("click", () => {
-      scannerModal.classList.add("hide");
-    });
-
-    scannerModal.addEventListener("click", (event) => {
-      if (event.target === scannerModal) {
+      scannerViewport.addEventListener("click", () => {
+        const codes = Object.keys(scannerCatalog);
+        const randomCode = codes[Math.floor(Math.random() * codes.length)];
+        applyScannedProduct(randomCode);
         scannerModal.classList.add("hide");
-      }
-    });
+      });
 
-    Object.keys(storesByCity).forEach((city) => {
-      const option = document.createElement("option");
-      option.value = city;
-      option.textContent = city;
-      citySelect.appendChild(option);
-    });
+      closeScannerBtn.addEventListener("click", () => {
+        scannerModal.classList.add("hide");
+      });
 
-    citySelect.addEventListener("change", () => {
-      showStoresLoading();
-      renderStores(citySelect.value);
-      if (storesMapInstance) {
-        storesMapInstance.invalidateSize();
-        syncStoresMapViewport();
-      }
-    });
+      scannerModal.addEventListener("click", (event) => {
+        if (event.target === scannerModal) {
+          scannerModal.classList.add("hide");
+        }
+      });
+    }
 
-    snakeStart.addEventListener("click", startSnake);
-    snakeReset.addEventListener("click", () => {
-      saveSnakeScore();
-      resetSnake();
-      stopSnake();
-    });
-    snakePadButtons.forEach((button) => {
-      button.addEventListener("click", () => setSnakeDirection(button.dataset.snakeDir));
-    });
+    if (citySelect && storesMap && storesList && storesLoading) {
+      Object.keys(storesByCity).forEach((city) => {
+        const option = document.createElement("option");
+        option.value = city;
+        option.textContent = city;
+        citySelect.appendChild(option);
+      });
+
+      citySelect.addEventListener("change", () => {
+        storesLoading.classList.remove("hide");
+        renderStores(citySelect.value);
+        if (storesMapInstance) {
+          storesMapInstance.invalidateSize();
+          syncStoresMapViewport();
+        }
+        setTimeout(() => storesLoading.classList.add("hide"), 420);
+      });
+    }
+
+    if (snakeStart && snakeReset && snakeCanvas) {
+      snakeStart.addEventListener("click", startSnake);
+      snakeReset.addEventListener("click", () => {
+        saveSnakeScore();
+        resetSnake();
+        stopSnake();
+      });
+      snakePadButtons.forEach((button) => {
+        button.addEventListener("click", () => setSnakeDirection(button.dataset.snakeDir));
+      });
+    }
 
     keyTermsLink.addEventListener("click", (event) => {
       event.preventDefault();
@@ -3242,14 +3138,23 @@
       }
     });
 
-    addCalcRow({ item: "Azucar Trebol 1 Kg", price: "799", qty: "2" });
-    addCalcRow({ item: "Cafe Tradicion", price: "5490", qty: "1" });
-    citySelect.value = "Temuco";
-    showStoresLoading(450);
-    renderStores("Temuco");
-    resetSnake();
-    renderSnakeHistory();
-    openService("scanner");
+    if (calcRows) {
+      addCalcRow({ item: "Azucar Trebol 1 Kg", price: "799", qty: "2" });
+      addCalcRow({ item: "Cafe Tradicion", price: "5490", qty: "1" });
+    }
+    if (citySelect && storesLoading) {
+      citySelect.value = "Temuco";
+      storesLoading.classList.remove("hide");
+      renderStores("Temuco");
+      setTimeout(() => storesLoading.classList.add("hide"), 420);
+    }
+    if (snakeCanvas && snakeHistory) {
+      resetSnake();
+      renderSnakeHistory();
+    }
+    if (serviceChips.length) {
+      openService("scanner");
+    }
 
     renderMemberData();
     if (mobileMode) {
