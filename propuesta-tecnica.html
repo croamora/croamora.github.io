@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Propuesta Tecnica - Cliente Vecino Trebol</title>
+  <title>Documento - Propuesta Tecnica Cliente Vecino Trebol</title>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap");
+    @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap");
 
     :root {
-      --bg: #f3f7fb;
+      --bg: #f2f6fb;
       --card: #ffffff;
-      --line: #d7e2ec;
-      --ink: #1a3043;
-      --muted: #5f7284;
-      --primary: #1768ac;
-      --accent: #1d8d3f;
+      --line: #d6e1ec;
+      --ink: #1b3449;
+      --muted: #5d7285;
+      --primary: #1a6eb2;
+      --ok: #1e7e3f;
+      --code: #0f1b29;
     }
 
     * { box-sizing: border-box; }
@@ -22,225 +23,461 @@
     body {
       margin: 0;
       font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
-      background: radial-gradient(circle at 0% 0%, #e9f3ff 0%, var(--bg) 44%);
       color: var(--ink);
+      background:
+        radial-gradient(circle at 0% 0%, #e8f2ff 0%, transparent 35%),
+        radial-gradient(circle at 100% 100%, #edf8f1 0%, transparent 38%),
+        var(--bg);
     }
 
-    .wrap {
-      max-width: 1120px;
+    .doc {
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 28px 18px 36px;
+      padding: 28px 18px 34px;
       display: grid;
       gap: 14px;
     }
 
-    .top {
+    .hero,
+    .section {
       border: 1px solid var(--line);
-      border-radius: 16px;
-      background: linear-gradient(130deg, #ffffff 0%, #f2f8ff 100%);
-      padding: 18px;
+      border-radius: 14px;
+      background: var(--card);
+      padding: 16px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #ffffff, #f2f8ff);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      border: 1px solid #bdd3e7;
+      color: #23527a;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .35px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      background: #edf6ff;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+      line-height: 1.2;
+      color: #143d62;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+      max-width: 90ch;
+      font-size: .93rem;
+    }
+
+    .meta {
+      margin-top: 12px;
       display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
     }
 
-    .top h1 {
-      margin: 0;
-      font-size: clamp(1.2rem, 2vw, 1.6rem);
-      color: #123a5d;
-    }
-
-    .top p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.45;
-      font-size: .92rem;
-      max-width: 78ch;
-    }
-
-    .stack {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .pill {
+    .meta article {
       border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--card);
-      padding: 10px;
+      border-radius: 10px;
+      padding: 8px;
+      background: #fff;
       display: grid;
       gap: 3px;
     }
 
-    .pill span {
+    .meta span {
       font-size: .68rem;
-      color: var(--muted);
       text-transform: uppercase;
+      color: #60768a;
       letter-spacing: .35px;
       font-weight: 700;
     }
 
-    .pill strong {
-      font-size: .84rem;
+    .meta strong {
+      font-size: .83rem;
       color: var(--ink);
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1.4fr .95fr;
-      gap: 14px;
-    }
-
-    .card {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: var(--card);
-      padding: 14px;
-    }
-
-    .card h2 {
+    h2 {
       margin: 0 0 10px;
-      font-size: 1rem;
-      color: #1a486d;
+      font-size: 1.04rem;
+      color: #17476f;
     }
 
-    .diagram {
+    h3 {
+      margin: 0 0 8px;
+      font-size: .9rem;
+      color: #1e4b72;
+    }
+
+    p {
+      margin: 0;
+      color: #4f667a;
+      line-height: 1.45;
+      font-size: .88rem;
+    }
+
+    .cols-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 10px;
+      background: #fbfdff;
+      display: grid;
+      gap: 6px;
+    }
+
+    .ok {
+      border: 1px solid #cce6d2;
+      background: #f1faf3;
+      color: #225e34;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: .8rem;
+      font-weight: 700;
+    }
+
+    .warn {
+      border: 1px solid #e8ddc2;
+      background: #fff9ea;
+      color: #7b5b17;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: .8rem;
+      font-weight: 700;
+    }
+
+    ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+    li { color: #455f75; font-size: .84rem; line-height: 1.38; }
+
+    .diagram-block {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fcfeff;
+      padding: 10px;
       display: grid;
       gap: 8px;
     }
 
+    .diagram-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
     .node {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #f8fcff;
-      padding: 10px;
+      border: 1px solid #d7e4f0;
+      border-radius: 10px;
+      padding: 8px;
       text-align: center;
+      background: #f7fbff;
     }
 
     .node strong {
       display: block;
-      font-size: .86rem;
-      margin-bottom: 3px;
-      color: #17456b;
+      color: #17486f;
+      font-size: .84rem;
+      margin-bottom: 2px;
     }
 
     .node span {
-      font-size: .76rem;
-      color: var(--muted);
+      color: #5a7388;
+      font-size: .74rem;
     }
 
-    .flow {
+    .arrow {
       text-align: center;
-      font-size: .74rem;
-      color: #5b7390;
+      font-size: .76rem;
+      color: #5e7590;
       font-weight: 800;
     }
 
-    .code {
-      margin-top: 10px;
+    .ascii {
+      border: 1px solid #283a4e;
       border-radius: 12px;
-      border: 1px solid #233244;
-      background: #0e1926;
-      color: #d8ebff;
+      background: var(--code);
+      color: #d6ebff;
       padding: 11px;
-      font-family: "Courier New", monospace;
-      font-size: .74rem;
-      overflow-x: auto;
       white-space: pre;
+      overflow-x: auto;
+      font-family: "Courier New", monospace;
+      font-size: .73rem;
       line-height: 1.35;
     }
 
-    ul { margin: 0; padding-left: 18px; display: grid; gap: 7px; }
-    li { font-size: .82rem; color: #445a6f; line-height: 1.35; }
-
-    .ok {
-      border: 1px solid #cbe5cf;
-      background: #f1faf3;
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem;
+      border: 1px solid var(--line);
       border-radius: 10px;
-      padding: 9px 10px;
-      color: #1d6232;
-      font-size: .8rem;
-      font-weight: 700;
-      margin-top: 10px;
+      overflow: hidden;
+      background: #fff;
     }
 
-    .links {
+    .table th,
+    .table td {
+      border-bottom: 1px solid var(--line);
+      padding: 8px 9px;
+      text-align: left;
+      vertical-align: top;
+      color: #466074;
+      line-height: 1.35;
+    }
+
+    .table th {
+      background: #f3f8fe;
+      color: #1f4668;
+      font-weight: 800;
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .25px;
+    }
+
+    .table tr:last-child td { border-bottom: 0; }
+
+    .code {
+      border: 1px solid #27394c;
+      border-radius: 12px;
+      background: #0f1a27;
+      color: #d8edff;
+      padding: 10px;
+      font-family: "Courier New", monospace;
+      font-size: .73rem;
+      line-height: 1.35;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .actions {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
-    .links a {
+    .actions a {
       text-decoration: none;
-      border: 1px solid #b8cfe1;
+      border: 1px solid #b9d0e3;
       border-radius: 999px;
-      background: #eef6fd;
-      color: #175f99;
+      background: #eef6fe;
+      color: #155d97;
       padding: 8px 12px;
       font-size: .78rem;
       font-weight: 700;
     }
 
-    @media (max-width: 920px) {
-      .stack { grid-template-columns: 1fr 1fr; }
-      .grid { grid-template-columns: 1fr; }
+    @media (max-width: 980px) {
+      .meta { grid-template-columns: 1fr 1fr; }
+      .cols-2,
+      .grid-3 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <section class="top">
-      <h1>Propuesta Tecnica - Cliente Vecino Trebol</h1>
-      <p>
-        Esta propuesta separa claramente responsabilidades: el backend propio mantiene clientes y credenciales,
-        y consulta al sistema externo por RUT para traer puntos, compras y ofertas. El frontend recibe un resumen
-        unificado en una sola respuesta.
+  <main class="doc">
+    <section class="hero">
+      <div class="eyebrow">Documento de entrega</div>
+      <h1>Propuesta Tecnica - Plataforma Cliente Vecino Trebol</h1>
+      <p class="subtitle">
+        Este documento define la arquitectura objetivo para la solucion digital de Cliente Vecino.
+        El backend propio gestiona identidad y datos de cliente, mientras que el sistema externo provee
+        puntos, historial de compras y ofertas. La aplicacion frontend consume una respuesta unificada y segura.
       </p>
-      <div class="stack">
-        <article class="pill"><span>Backend</span><strong>Java 21 + Spring Boot WebFlux</strong></article>
-        <article class="pill"><span>Frontend</span><strong>Angular 21 (estable)</strong></article>
-        <article class="pill"><span>Datos locales</span><strong>PostgreSQL (clientes y auth)</strong></article>
-        <article class="pill"><span>Seguridad</span><strong>JWT Bearer Token</strong></article>
+      <div class="meta">
+        <article><span>Backend</span><strong>Java 21 + Spring Boot WebFlux</strong></article>
+        <article><span>Base de datos</span><strong>PostgreSQL (clientes + credenciales)</strong></article>
+        <article><span>Frontend</span><strong>Angular 21 (ultima major estable)</strong></article>
+        <article><span>Seguridad</span><strong>JWT Bearer + login usuario/clave</strong></article>
       </div>
-      <div class="links">
+      <div class="actions">
         <a href="./index.html">Volver a demo</a>
         <a href="./index.html?mobile=1" target="_blank" rel="noopener noreferrer">Ver tarjeta movil</a>
       </div>
     </section>
 
-    <section class="grid">
-      <article class="card">
-        <h2>Estructura de aplicaciones</h2>
-        <div class="diagram">
-          <div class="node"><strong>Angular App</strong><span>consume solo API propia</span></div>
-          <div class="flow">JWT Bearer</div>
-          <div class="node"><strong>API WebFlux</strong><span>orquesta y unifica respuesta</span></div>
-          <div class="flow">Llamadas reactivas en paralelo</div>
-          <div class="node"><strong>PostgreSQL</strong><span>clientes, usuario, clave hash, registro</span></div>
-          <div class="node"><strong>Sistema externo</strong><span>puntos + mis compras + mis ofertas por RUT</span></div>
-          <div class="flow">GET /api/v1/clientes/{rut}/resumen</div>
+    <section class="section">
+      <h2>1. Objetivo y alcance</h2>
+      <div class="cols-2">
+        <div class="box">
+          <h3>Objetivo</h3>
+          <p>
+            Entregar al frontend una vista consolidada del cliente por RUT en una sola consulta,
+            combinando datos locales (cliente y autenticacion) con datos externos (puntos, compras, ofertas).
+          </p>
         </div>
-        <div class="code">Mono&lt;Cliente&gt; local = clienteService.findByRut(rut);
-Mono&lt;ResumenExterno&gt; externo = externalClient.getResumenByRut(rut);
+        <div class="box">
+          <h3>Alcance funcional</h3>
+          <ul>
+            <li>Autenticacion por usuario/clave y emision de token JWT.</li>
+            <li>Registro de nuevos clientes en base local.</li>
+            <li>Consulta enriquecida por RUT para puntos, compras y ofertas.</li>
+            <li>Manejo de fallas del sistema externo con degradacion controlada.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-return Mono.zip(local, externo)
-  .map(tuple -&gt; resumenMapper.unificar(tuple.getT1(), tuple.getT2()))
-  .timeout(Duration.ofSeconds(3));</div>
-        <div class="ok">Se usa programacion reactiva para ejecutar consultas en paralelo y reducir latencia de carga de la vista.</div>
-      </article>
+    <section class="section">
+      <h2>2. Estructura de aplicaciones (diagrama de flujo)</h2>
+      <div class="grid-3">
+        <div class="diagram-block">
+          <div class="diagram-row">
+            <div class="node"><strong>Usuario</strong><span>Interaccion en web/movil</span></div>
+            <div class="arrow">↓</div>
+            <div class="node"><strong>Frontend Angular</strong><span>consume API propia</span></div>
+            <div class="arrow">JWT Bearer ↓</div>
+            <div class="node"><strong>Backend WebFlux</strong><span>orquesta y unifica</span></div>
+            <div class="arrow">Llamadas paralelas ↓</div>
+            <div class="node"><strong>PostgreSQL + Sistema Externo</strong><span>fuentes de datos</span></div>
+          </div>
+        </div>
+        <div class="box" style="grid-column: span 2;">
+          <h3>Diagrama tipo dibujo (secuencia simplificada)</h3>
+          <div class="ascii">[Usuario]
+   |
+   | Login (usuario/clave)
+   v
+[Angular 21] -- POST /api/v1/auth/login --> [Backend WebFlux]
+   |                                             |
+   | <----------- JWT Token ---------------------|
+   |
+   | GET /api/v1/clientes/{rut}/resumen (Bearer)
+   v
+[Backend WebFlux] -- consulta local ---------> [PostgreSQL]
+        | \
+        |  \-- consulta externa por RUT -----> [Sistema Externo]
+        |
+        |==== Mono.zip(local, externo) ====|
+        v
+  Respuesta unificada (cliente + puntos + compras + ofertas)
+        |
+        v
+     [Angular 21 renderiza vista]
+          </div>
+        </div>
+      </div>
+      <div class="ok">La llamada al sistema externo se realiza en el backend, nunca directamente desde el frontend.</div>
+    </section>
 
-      <article class="card">
-        <h2>Contratos API</h2>
-        <ul>
-          <li><strong>POST /api/v1/auth/login:</strong> valida usuario/clave y entrega token JWT.</li>
-          <li><strong>POST /api/v1/clientes:</strong> registra nuevo cliente en base local.</li>
-          <li><strong>GET /api/v1/clientes/{rut}/resumen:</strong> trae cliente local + datos externos unificados.</li>
-          <li><strong>Seguridad:</strong> contrasenas hasheadas (BCrypt/Argon2), rate limit en login.</li>
-          <li><strong>Resiliencia:</strong> timeout, retry y circuit breaker para el sistema externo.</li>
-          <li><strong>Fallback:</strong> si externo falla, devolver cliente local y estado degradado controlado.</li>
-        </ul>
-      </article>
+    <section class="section">
+      <h2>3. Programacion reactiva y enriquecimiento en paralelo</h2>
+      <p>
+        Se propone usar Spring WebFlux y Reactor para ejecutar en paralelo las consultas a la base local y al sistema externo.
+        Esto reduce latencia y mantiene el flujo no bloqueante de punta a punta.
+      </p>
+      <div class="code">Mono&lt;ClienteLocal&gt; localMono = clienteRepository.findByRut(rut);
+Mono&lt;ResumenExterno&gt; externoMono = externalClient.getResumenByRut(rut)
+  .timeout(Duration.ofSeconds(3))
+  .retryWhen(Retry.backoff(2, Duration.ofMillis(200)));
+
+return Mono.zip(localMono, externoMono)
+  .map(tuple -&gt; resumenMapper.toResponse(tuple.getT1(), tuple.getT2()))
+  .onErrorResume(ex -&gt;
+      localMono.map(local -&gt; resumenMapper.toDegradedResponse(local, ex))
+  );</div>
+      <div class="warn">Nota: el sistema externo es fuente de verdad para puntos, compras y ofertas; el backend solo normaliza y agrega.</div>
+    </section>
+
+    <section class="section">
+      <h2>4. Contratos API propuestos</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Metodo y ruta</th>
+            <th>Descripcion</th>
+            <th>Autenticacion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>POST /api/v1/auth/login</strong></td>
+            <td>Valida usuario/clave contra backend local y emite JWT.</td>
+            <td>No (publica)</td>
+          </tr>
+          <tr>
+            <td><strong>POST /api/v1/clientes</strong></td>
+            <td>Registra nuevo cliente y credenciales en Postgres.</td>
+            <td>Segun politica (publica o admin)</td>
+          </tr>
+          <tr>
+            <td><strong>GET /api/v1/clientes/{rut}/resumen</strong></td>
+            <td>Entrega cliente local + puntos + compras + ofertas desde fuente externa.</td>
+            <td>Bearer JWT</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="code">{
+  "cliente": { "rut": "10.383.718-9", "nombre": "...", "email": "..." },
+  "puntos": { "acumulados": 12840, "fuente": "externo" },
+  "misCompras": [ ... ],
+  "misOfertas": [ ... ],
+  "meta": { "externalStatus": "OK|DEGRADED", "requestId": "..." }
+}</div>
+    </section>
+
+    <section class="section">
+      <h2>5. Seguridad, resiliencia y observabilidad</h2>
+      <div class="cols-2">
+        <div class="box">
+          <h3>Seguridad</h3>
+          <ul>
+            <li>Hash de contrasena con BCrypt o Argon2.</li>
+            <li>JWT firmado y expiracion controlada.</li>
+            <li>Rate limit y lockout progresivo en login.</li>
+            <li>No exponer credenciales ni detalles del sistema externo al frontend.</li>
+          </ul>
+        </div>
+        <div class="box">
+          <h3>Resiliencia y operacion</h3>
+          <ul>
+            <li>Timeout, retry y circuit breaker en integracion externa.</li>
+            <li>Fallback degradado (cliente local disponible si externo falla).</li>
+            <li>Cache corta por RUT (30-60 segundos) para reducir latencia.</li>
+            <li>Trazabilidad con request-id, logs estructurados y metricas.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>6. Plan de implementacion sugerido</h2>
+      <div class="grid-3">
+        <div class="box">
+          <h3>Fase 1</h3>
+          <p>Bootstrapping backend, modelo de datos local, login JWT y registro de clientes.</p>
+        </div>
+        <div class="box">
+          <h3>Fase 2</h3>
+          <p>Integracion externa por RUT, endpoint /resumen y mapeo de contratos al frontend.</p>
+        </div>
+        <div class="box">
+          <h3>Fase 3</h3>
+          <p>Hardening: observabilidad, performance, resiliencia y pruebas de carga/UAT.</p>
+        </div>
+      </div>
+      <div class="ok">Resultado esperado: experiencia rapida para usuario final y arquitectura mantenible para evolucion del producto.</div>
     </section>
   </main>
 </body>
