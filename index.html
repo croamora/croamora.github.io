@@ -1190,6 +1190,133 @@
       font-size: .76rem;
     }
 
+    .tech-page {
+      padding: 12px;
+      background: #f4f7fb;
+      min-height: 100%;
+    }
+
+    .tech-hero {
+      border: 1px solid #d6e1ec;
+      border-radius: 14px;
+      background: linear-gradient(140deg, #ffffff, #f2f8ff);
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .tech-hero h4 {
+      margin: 0;
+      color: #15406b;
+      font-size: 1rem;
+    }
+
+    .tech-hero p {
+      margin: 6px 0 0;
+      color: #4f6070;
+      font-size: .8rem;
+      line-height: 1.35;
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .tech-pill {
+      border: 1px solid #d6e3ee;
+      border-radius: 12px;
+      background: #fff;
+      padding: 8px;
+      display: grid;
+      gap: 2px;
+    }
+
+    .tech-pill span {
+      font-size: .68rem;
+      color: #607282;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    .tech-pill strong {
+      font-size: .8rem;
+      color: #1a344b;
+    }
+
+    .tech-diagram {
+      border: 1px solid #d6e2ed;
+      border-radius: 14px;
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .tech-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .tech-node {
+      border: 1px solid #dbe5ee;
+      border-radius: 12px;
+      padding: 8px;
+      text-align: center;
+      background: #f9fcff;
+    }
+
+    .tech-node strong {
+      display: block;
+      font-size: .8rem;
+      color: #1b3f62;
+      margin-bottom: 2px;
+    }
+
+    .tech-node span {
+      display: block;
+      font-size: .72rem;
+      color: #5a6f82;
+    }
+
+    .tech-flow {
+      text-align: center;
+      color: #5e7590;
+      font-size: .78rem;
+      font-weight: 800;
+    }
+
+    .tech-code {
+      border: 1px solid #d5e0ea;
+      border-radius: 12px;
+      background: #0f1a26;
+      color: #dcf0ff;
+      padding: 10px;
+      font-family: "Courier New", monospace;
+      font-size: .7rem;
+      line-height: 1.35;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .tech-notes {
+      margin-top: 10px;
+      border: 1px solid #d4e1ec;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .tech-notes li {
+      font-size: .76rem;
+      color: #42596f;
+      line-height: 1.35;
+    }
+
     .profile-shortcuts {
       margin: 8px 0 10px;
       display: grid;
@@ -1800,6 +1927,8 @@
     <button data-jump="no-account">Sin cuenta</button>
     <button data-jump="update">Actualizar</button>
     <button data-jump="profile">Tarjeta</button>
+    <button data-jump="benefits">Beneficios</button>
+    <button data-jump="propuesta-tecnica">Propuesta tecnica</button>
   </div>
 
   <main class="layout">
@@ -1818,6 +1947,7 @@
       <div class="mobile-link">
         <p>Vista directa para celular (sin marco de demo):</p>
         <a href="?mobile=1" target="_blank" rel="noopener noreferrer">Abrir perfil en movil</a>
+        <a href="?mobile=1&view=propuesta-tecnica" target="_blank" rel="noopener noreferrer">Abrir propuesta tecnica movil</a>
         <div class="mobile-qr">
           <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3A%2F%2Fcroamora.github.io%2F%3Fmobile%3D1" alt="QR para abrir vista movil">
           <span>https://croamora.github.io/?mobile=1</span>
@@ -2172,6 +2302,59 @@
                 </div>
               </div>
             </section>
+
+            <section class="view" id="view-propuesta-tecnica">
+              <div class="tech-page">
+                <div class="tech-hero">
+                  <h4>Propuesta tecnica</h4>
+                  <p>Backend propio en Spring Boot reactivo que unifica cliente local con puntos, compras y ofertas desde sistema externo por RUT.</p>
+                </div>
+
+                <div class="tech-grid">
+                  <div class="tech-pill"><span>Backend</span><strong>Java 21 + Spring Boot WebFlux</strong></div>
+                  <div class="tech-pill"><span>Frontend</span><strong>Angular 21 (estable)</strong></div>
+                  <div class="tech-pill"><span>Base de datos</span><strong>PostgreSQL (clientes y credenciales)</strong></div>
+                  <div class="tech-pill"><span>Seguridad</span><strong>JWT Bearer + login usuario/clave</strong></div>
+                </div>
+
+                <div class="tech-diagram">
+                  <div class="tech-row">
+                    <article class="tech-node">
+                      <strong>Angular App</strong>
+                      <span>consume solo API propia</span>
+                    </article>
+                    <div class="tech-flow">JWT</div>
+                    <article class="tech-node">
+                      <strong>API WebFlux</strong>
+                      <span>agrega y enriquece respuesta</span>
+                    </article>
+                    <div class="tech-flow">llamadas en paralelo</div>
+                    <article class="tech-node">
+                      <strong>PostgreSQL</strong>
+                      <span>clientes, auth, registro</span>
+                    </article>
+                    <article class="tech-node">
+                      <strong>Sistema externo</strong>
+                      <span>puntos, mis compras, mis ofertas</span>
+                    </article>
+                    <div class="tech-flow">respuesta unificada /clientes/{rut}/resumen</div>
+                  </div>
+                </div>
+
+                <div class="tech-code">Mono&lt;Cliente&gt; local = clienteService.findByRut(rut);
+Mono&lt;ResumenExterno&gt; ext = externalClient.getResumen(rut);
+return Mono.zip(local, ext)
+  .map(tuple -&gt; mapper.unificar(tuple.getT1(), tuple.getT2()))
+  .timeout(Duration.ofSeconds(3));</div>
+
+                <ul class="tech-notes">
+                  <li>POST /api/v1/auth/login valida usuario/clave y emite token.</li>
+                  <li>POST /api/v1/clientes registra nuevos clientes en base propia.</li>
+                  <li>GET /api/v1/clientes/{rut}/resumen consulta local + externo y responde en una sola llamada.</li>
+                  <li>Recomendado: timeout, retry, circuit breaker y cache corta por RUT para resiliencia.</li>
+                </ul>
+              </div>
+            </section>
           </div>
 
           <div class="floating-nav">
@@ -2185,7 +2368,7 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    const flow = ["totem", "rut", "no-account", "update", "profile", "benefits"];
+    const flow = ["totem", "rut", "no-account", "update", "profile", "benefits", "propuesta-tecnica"];
     const copy = {
       totem: {
         step: "Paso 1 de 5",
@@ -2222,6 +2405,12 @@
         title: "Club de beneficios",
         text: "Desde su tarjeta, el cliente entra a una vitrina de beneficios destacados y convenios vigentes para usar su membresia.",
         hint: "Que muestra este paso: extension de valor con alianzas, descuentos y activaciones de alto uso."
+      },
+      "propuesta-tecnica": {
+        step: "Paso 6 de 6",
+        title: "Propuesta tecnica",
+        text: "La arquitectura combina backend reactivo en Java 21 con datos locales y un sistema externo para enriquecer puntos, compras y ofertas por RUT.",
+        hint: "Que muestra este paso: diseno de integracion, seguridad JWT y respuesta unificada para el frontend Angular."
       }
     };
 
@@ -3160,7 +3349,8 @@
     if (mobileMode) {
       document.body.classList.add("mobile-mode");
       loggedIn = true;
-      const targetMobileView = mobileView === "benefits" ? "benefits" : "profile";
+      const allowedMobileViews = new Set(["profile", "benefits", "propuesta-tecnica"]);
+      const targetMobileView = allowedMobileViews.has(mobileView) ? mobileView : "profile";
       setScreen(targetMobileView);
     } else {
       setScreen("totem");
